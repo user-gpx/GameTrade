@@ -1,0 +1,43 @@
+# Python依赖包 
+# 核心框架
+Django==4.2.0
+
+# # 图片处理
+# Pillow==10.0.0
+
+# # 表单美化
+# django-crispy-forms==2.0
+# crispy-bootstrap5==0.7
+
+# # 开发工具
+# django-extensions==3.2.0
+# django-debug-toolbar==4.1.0
+# black==23.3.0
+# flake8==6.0.0
+# pytest-django==4.5.2
+
+# # 环境变量
+# python-dotenv==1.0.0
+
+# # 分页和搜索
+# django-filter==23.2
+
+# # API（如果需要）
+# djangorestframework==3.14.0
+
+# # 定时任务（用于月报）
+# celery==5.3.1
+# redis==5.0.0
+
+# # 邮件
+# django-anymail==10.1
+
+# # 数据处理（用于统计报表）
+# pandas==2.0.3
+# openpyxl==3.1.2
+
+# # 数据库驱动（根据需要选择）
+# # PostgreSQL:
+# # psycopg2-binary==2.9.6
+# # MySQL:
+# # mysqlclient==2.2.0

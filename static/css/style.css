@@ -1,0 +1,52 @@
+/* 全局样式 */
+body {
+    font-family: 'Microsoft YaHei', sans-serif;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* 卡片样式 */
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* 价格标签 */
+.price-tag {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #dc3545;
+}
+
+/* 状态标签 */
+.status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-pending { background-color: #ffc107; color: #000; }
+.status-paid { background-color: #17a2b8; color: #fff; }
+.status-shipped { background-color: #007bff; color: #fff; }
+.status-completed { background-color: #28a745; color: #fff; }
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
