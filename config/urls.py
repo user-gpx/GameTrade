@@ -16,7 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.shortcuts import HttpResponse
+from django.urls import path, include  # 导入 include
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
+    path('stats/', include('apps.stats.urls')),  # 统计模块的所有url
+    #不要在这里一条条添加，在你的app中新建urls.py,类似上面这条
 ]
