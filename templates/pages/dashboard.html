@@ -1,0 +1,298 @@
+{% extends 'base.html' %}
+
+{% block title %}个人中心 - 游戏道具交易平台{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: transform 0.3s;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    .stat-icon {
+        font-size: 3rem;
+        opacity: 0.8;
+    }
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    .quick-action-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: all 0.3s;
+        text-align: center;
+        padding: 20px;
+        cursor: pointer;
+    }
+    .quick-action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    .quick-action-icon {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        color: #667eea;
+    }
+    .recent-item {
+        border-left: 4px solid #667eea;
+        padding: 15px;
+        margin-bottom: 10px;
+        background: white;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .balance-card {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 20px;
+    }
+    .welcome-section {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- 欢迎区域 + 余额 -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="welcome-section">
+                <h2 class="mb-3">
+                    <i class="fas fa-hand-peace text-primary"></i> 
+                    欢迎回来，{{ user.username }}！
+                </h2>
+                <p class="text-muted">
+                    <i class="fas fa-clock"></i> 上次登录：{{ user.last_login|date:"Y-m-d H:i" }}
+                </p>
+                <div class="mt-3">
+                    <span class="badge bg-primary p-2 me-2">
+                        <i class="fas fa-envelope"></i> {{ user.email }}
+                    </span>
+                    <span class="badge bg-info p-2">
+                        <i class="fas fa-calendar"></i> 注册时间：{{ user.date_joined|date:"Y-m-d" }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="balance-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"><i class="fas fa-wallet"></i> 账户余额</h5>
+                    <i class="fas fa-credit-card stat-icon"></i>
+                </div>
+                <h2 class="display-6 mb-3">¥ {{ user.balance|default:"0.00" }}</h2>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-light btn-sm" onclick="location.href='/users/recharge/'">
+                        <i class="fas fa-plus-circle"></i> 充值
+                    </button>
+                    <button class="btn btn-outline-light btn-sm" onclick="location.href='/users/withdraw/'">
+                        <i class="fas fa-minus-circle"></i> 提现
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 数据统计卡片 -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-number">{{ selling_count|default:"0" }}</div>
+                        <div>出售中的道具</div>
+                    </div>
+                    <i class="fas fa-tags stat-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, #5f72e5 0%, #4bc0c8 100%);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-number">{{ buying_count|default:"0" }}</div>
+                        <div>购买中的订单</div>
+                    </div>
+                    <i class="fas fa-shopping-cart stat-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-number">{{ completed_count|default:"0" }}</div>
+                        <div>已完成交易</div>
+                    </div>
+                    <i class="fas fa-check-circle stat-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-number">{{ favorite_count|default:"0" }}</div>
+                        <div>收藏的道具</div>
+                    </div>
+                    <i class="fas fa-heart stat-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 快捷操作 -->
+    <h4 class="mb-3"><i class="fas fa-bolt text-warning"></i> 快捷操作</h4>
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="quick-action-card" onclick="location.href='/items/sell/'">
+                <i class="fas fa-plus-circle quick-action-icon"></i>
+                <h5>发布道具</h5>
+                <p class="text-muted small">出售你的游戏道具</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="quick-action-card" onclick="location.href='/items/'">
+                <i class="fas fa-search quick-action-icon"></i>
+                <h5>浏览市场</h5>
+                <p class="text-muted small">寻找心仪的道具</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="quick-action-card" onclick="location.href='/orders/buyer/'">
+                <i class="fas fa-box quick-action-icon"></i>
+                <h5>我的订单</h5>
+                <p class="text-muted small">查看购买记录</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="quick-action-card" onclick="location.href='/users/favorites/'">
+                <i class="fas fa-star quick-action-icon"></i>
+                <h5>我的收藏</h5>
+                <p class="text-muted small">查看收藏的道具</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- 最近交易 -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-exchange-alt text-primary"></i> 最近交易</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_orders %}
+                        {% for order in recent_orders %}
+                        <div class="recent-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">{{ order.item.name }}</h6>
+                                <small class="text-muted">
+                                    <i class="fas fa-clock"></i> {{ order.created_at|timesince }}前
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-{% if order.status == 'completed' %}success{% elif order.status == 'pending' %}warning{% else %}info{% endif %}">
+                                    {{ order.get_status_display }}
+                                </span>
+                                <div class="mt-1">
+                                    <strong class="text-primary">¥{{ order.price }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center my-3">暂无最近交易</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-white text-end">
+                    <a href="/orders/" class="btn btn-sm btn-outline-primary">查看全部 <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 推荐道具 -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-fire text-danger"></i> 热门推荐</h5>
+                </div>
+                <div class="card-body">
+                    {% if recommended_items %}
+                        {% for item in recommended_items %}
+                        <div class="recent-item d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                {% if item.image %}
+                                    <img src="{{ item.image.url }}" alt="{{ item.name }}" style="width: 40px; height: 40px; object-fit: cover;" class="rounded me-2">
+                                {% else %}
+                                    <div class="bg-light rounded me-2" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-gamepad text-muted"></i>
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <h6 class="mb-1">{{ item.name }}</h6>
+                                    <small class="text-muted">{{ item.category }}</small>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <div><strong class="text-danger">¥{{ item.price }}</strong></div>
+                                <small class="text-muted">{{ item.seller.username }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center my-3">暂无推荐道具</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-white text-end">
+                    <a href="/items/" class="btn btn-sm btn-outline-danger">浏览更多 <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 待处理事项 -->
+    {% if pending_actions %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong><i class="fas fa-bell"></i> 待处理事项：</strong>
+                <ul class="mb-0 mt-2">
+                    {% for action in pending_actions %}
+                    <li>{{ action }}</li>
+                    {% endfor %}
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // 页面加载动画
+        $('.stat-card').each(function(index) {
+            $(this).css('opacity', 0);
+            $(this).delay(index * 100).animate({opacity: 1}, 500);
+        });
+    });
+</script>
+{% endblock %}
