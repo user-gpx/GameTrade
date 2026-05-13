@@ -15,8 +15,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.generic import TemplateView  # 1. 新增导入：引入 TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', TemplateView.as_view(template_name='pages/index.html'), name='index'),
+    path('users/', include('users.urls')),  # 用户模块
+    path('items/', include('items.urls')),  # 道具模块
+    path('stats/', include('apps.stats.urls')),  # 统计模块的所有url
+    #不要在这里一条条添加，在你的app中新建urls.py,类似上面这条
 ]
+
+# 开发环境下提供媒体文件服务
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
