@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}个人资料 - 游戏道具交易平台{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- 左侧：用户信息卡片 -->
+    <div class="col-md-4">
+        <div class="card shadow mb-4">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    {% if profile.avatar %}
+                        <img src="{{ profile.avatar.url }}" alt="头像" class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
+                            <i class="fas fa-user text-white" style="font-size: 3rem;"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <h4>{{ user.username }}</h4>
+                <p class="text-muted">
+                    {% if user.email %}{{ user.email }}{% endif %}
+                </p>
+                {% if profile.bio %}
+                    <p>{{ profile.bio }}</p>
+                {% endif %}
+                {% if profile.phone %}
+                    <p><i class="fas fa-phone"></i> {{ profile.phone }}</p>
+                {% endif %}
+                <hr>
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h5 class="text-primary">{{ profile.balance }}</h5>
+                        <small class="text-muted">账户余额(元)</small>
+                    </div>
+                    <div class="col-6">
+                        <h5 class="text-success">{{ user.items.count }}</h5>
+                        <small class="text-muted">发布道具</small>
+                    </div>
+                </div>
+                <hr>
+                <p class="text-muted small mb-2">
+                    <i class="fas fa-calendar"></i> 注册时间：{{ user.date_joined|date:"Y-m-d" }}
+                </p>
+                <a href="{% url 'users:edit_profile' %}" class="btn btn-outline-primary btn-sm w-100">
+                    <i class="fas fa-edit"></i> 编辑资料
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧：我发布的道具 -->
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-box"></i> 我发布的道具</h5>
+                <a href="{% url 'items:create' %}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> 发布道具
+                </a>
+            </div>
+            <div class="card-body">
+                {% if user_items %}
+                    <div class="row">
+                        {% for item in user_items %}
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <div class="card h-100">
+                                    {% if item.image %}
+                                        <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}" style="height: 150px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
+                                            <i class="fas fa-image text-muted" style="font-size: 2rem;"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div class="card-body p-2">
+                                        <h6 class="card-title mb-1">
+                                            <a href="{% url 'items:detail' item.pk %}" class="text-decoration-none">{{ item.name }}</a>
+                                        </h6>
+                                        <span class="price-tag">¥{{ item.price }}</span>
+                                        <span class="badge {{ item.get_status_display_class }} ms-1">{{ item.get_status_display }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'items:my_items' %}" class="btn btn-outline-secondary btn-sm w-100 mt-2">查看全部</a>
+                {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-box-open" style="font-size: 3rem;"></i>
+                        <p class="mt-2">暂无发布的道具</p>
+                        <a href="{% url 'items:create' %}" class="btn btn-primary btn-sm">发布第一个道具</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 快捷入口 -->
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <a href="{% url 'items:favorites' %}" class="card shadow text-decoration-none">
+                    <div class="card-body text-center">
+                        <i class="fas fa-heart text-danger" style="font-size: 2rem;"></i>
+                        <p class="mt-2 mb-0 text-dark">我的收藏</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 mb-3">
+                <a href="{% url 'items:my_items' %}" class="card shadow text-decoration-none">
+                    <div class="card-body text-center">
+                        <i class="fas fa-store text-primary" style="font-size: 2rem;"></i>
+                        <p class="mt-2 mb-0 text-dark">我的道具</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 mb-3">
+                <a href="{% url 'items:create' %}" class="card shadow text-decoration-none">
+                    <div class="card-body text-center">
+                        <i class="fas fa-plus-circle text-success" style="font-size: 2rem;"></i>
+                        <p class="mt-2 mb-0 text-dark">发布道具</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
