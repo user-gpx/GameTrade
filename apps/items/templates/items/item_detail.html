@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ item.name }} - 游戏道具交易平台{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">首页</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'items:list' %}">道具市场</a></li>
+        <li class="breadcrumb-item active">{{ item.name }}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <!-- 左侧：道具图片 -->
+    <div class="col-md-5 mb-4">
+        <div class="card shadow">
+            {% if item.image %}
+                <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}" style="max-height: 400px; object-fit: contain; background: #f8f9fa;">
+            {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 400px;">
+                    <i class="fas fa-image text-muted" style="font-size: 5rem;"></i>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 右侧：道具信息 -->
+    <div class="col-md-7 mb-4">
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h3>{{ item.name }}</h3>
+                    <span class="badge {{ item.get_status_display_class }} fs-6">{{ item.get_status_display }}</span>
+                </div>
+                
+                <div class="mb-3">
+                    <span class="badge bg-info">{{ item.get_game_display }}</span>
+                    {% if item.category %}
+                        <span class="badge bg-secondary">{{ item.category.name }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="price-tag fs-2 mb-3">¥{{ item.price }}</div>
+
+                <table class="table table-borderless mb-3">
+                    <tr>
+                        <td class="text-muted" style="width: 100px;">卖家</td>
+                        <td><i class="fas fa-user"></i> {{ item.seller.username }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">发布时间</td>
+                        <td>{{ item.created_at|date:"Y-m-d H:i" }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">浏览次数</td>
+                        <td><i class="fas fa-eye"></i> {{ item.views_count }}</td>
+                    </tr>
+                </table>
+
+                <!-- 操作按钮 -->
+                <div class="d-flex gap-2 flex-wrap">
+                    {% if user.is_authenticated %}
+                        {% if item.status == 'available' and item.seller != user %}
+                            <a href="#" class="btn btn-success btn-lg">
+                                <i class="fas fa-shopping-cart"></i> 立即购买
+                            </a>
+                        {% endif %}
+                        
+                        <a href="{% url 'items:toggle_favorite' item.pk %}" class="btn {% if is_favorited %}btn-danger{% else %}btn-outline-danger{% endif %} btn-lg" id="favorite-btn">
+                            <i class="fas fa-heart"></i> {% if is_favorited %}已收藏{% else %}收藏{% endif %}
+                        </a>
+                        
+                        {% if item.seller == user %}
+                            <a href="{% url 'items:edit' item.pk %}" class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-edit"></i> 编辑
+                            </a>
+                            <a href="{% url 'items:delete' item.pk %}" class="btn btn-outline-warning btn-lg">
+                                <i class="fas fa-ban"></i> 下架
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'users:login' %}?next={{ request.path }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt"></i> 登录后购买
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 道具描述 -->
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-info-circle"></i> 道具描述</h5>
+    </div>
+    <div class="card-body">
+        <p style="white-space: pre-wrap;">{{ item.description }}</p>
+    </div>
+</div>
+
+<!-- 相关道具推荐 -->
+{% if related_items %}
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-th"></i> 同类推荐</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% for related in related_items %}
+                <div class="col-md-3 mb-3">
+                    <div class="card h-100">
+                        <a href="{% url 'items:detail' related.pk %}">
+                            {% if related.image %}
+                                <img src="{{ related.image.url }}" class="card-img-top" alt="{{ related.name }}" style="height: 120px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 120px;">
+                                    <i class="fas fa-image text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </a>
+                        <div class="card-body p-2">
+                            <h6 class="card-title small">
+                                <a href="{% url 'items:detail' related.pk %}" class="text-decoration-none">{{ related.name }}</a>
+                            </h6>
+                            <span class="price-tag small">¥{{ related.price }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// AJAX收藏功能
+document.addEventListener('DOMContentLoaded', function() {
+    const favoriteBtn = document.getElementById('favorite-btn');
+    if (favoriteBtn) {
+        favoriteBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            fetch(this.href, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.is_favorited) {
+                    this.classList.remove('btn-outline-danger');
+                    this.classList.add('btn-danger');
+                    this.innerHTML = '<i class="fas fa-heart"></i> 已收藏';
+                } else {
+                    this.classList.remove('btn-danger');
+                    this.classList.add('btn-outline-danger');
+                    this.innerHTML = '<i class="fas fa-heart"></i> 收藏';
+                }
+            });
+        });
+    }
+});
+</script>
+{% endblock %}
