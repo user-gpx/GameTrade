@@ -27,6 +27,7 @@ urlpatterns = [
     path('items/', include('items.urls')),  # 道具模块
     path('stats/', include('apps.stats.urls')),  # 统计模块的所有url
     #不要在这里一条条添加，在你的app中新建urls.py,类似上面这条
+   # path('trading/', include('apps.trading.urls')),  # 临时注释，等缺失的模型补全后再开启
 ]
 
 # 开发环境下提供媒体文件服务
