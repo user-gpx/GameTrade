@@ -20,11 +20,12 @@ class Category(models.Model):
 
 class Item(models.Model):
     """游戏道具"""
-    STATUS_CHOICES = [
-        ('available', '在售'),
-        ('sold', '已售出'),
-        ('off_shelf', '已下架'),
-    ]
+
+    class Status(models.TextChoices):
+        ON_SALE = 'available', '在售'
+        LOCKED = 'locked', '已锁定'
+        SOLD = 'sold', '已售出'
+        OFF_SHELF = 'off_shelf', '已下架'
 
     GAME_CHOICES = [
         ('lol', '英雄联盟'),
@@ -42,10 +43,11 @@ class Item(models.Model):
                                  related_name='items', verbose_name='分类')
     game = models.CharField(max_length=20, choices=GAME_CHOICES, default='other', verbose_name='所属游戏')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='价格')
+    stock = models.PositiveIntegerField(default=1, verbose_name='库存')
     description = models.TextField(verbose_name='描述')
     image = models.ImageField(upload_to='items/', blank=True, null=True, verbose_name='道具图片')
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='items', verbose_name='卖家')
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='available', verbose_name='状态')
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.ON_SALE, verbose_name='状态')
     views_count = models.PositiveIntegerField(default=0, verbose_name='浏览次数')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='发布时间')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
@@ -61,9 +63,10 @@ class Item(models.Model):
     def get_status_display_class(self):
         """返回状态对应的CSS类"""
         status_map = {
-            'available': 'bg-success',
-            'sold': 'bg-secondary',
-            'off_shelf': 'bg-warning',
+            self.Status.ON_SALE: 'bg-success',
+            self.Status.SOLD: 'bg-secondary',
+            self.Status.OFF_SHELF: 'bg-warning',
+            self.Status.LOCKED: 'bg-warning',
         }
         return status_map.get(self.status, 'bg-secondary')
 

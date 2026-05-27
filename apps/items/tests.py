@@ -17,7 +17,7 @@ class ItemTestCase(TestCase):
             price=999.00,
             seller=self.seller,
             description='这是一把测试用的武器',
-            status='available'
+            status=Item.Status.ON_SALE
         )
         self.list_url = reverse('items:list')
         self.detail_url = reverse('items:detail', args=[self.item.pk])

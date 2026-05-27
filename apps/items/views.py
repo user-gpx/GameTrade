@@ -11,7 +11,7 @@ from .forms import ItemForm, ItemSearchForm
 def item_list(request):
     """道具列表页（分页、搜索、排序）"""
     form = ItemSearchForm(request.GET)
-    items = Item.objects.filter(status='available').select_related('seller', 'category')
+    items = Item.objects.filter(status=Item.Status.ON_SALE).select_related('seller', 'category')
 
     if form.is_valid():
         keyword = form.cleaned_data.get('keyword')
@@ -64,7 +64,7 @@ def item_detail(request, pk):
 
     # 相关道具推荐（同游戏或同分类）
     related_items = Item.objects.filter(
-        status='available', game=item.game
+        status=Item.Status.ON_SALE, game=item.game
     ).exclude(pk=item.pk)[:4]
 
     return render(request, 'items/item_detail.html', {
@@ -110,7 +110,7 @@ def item_delete(request, pk):
     """删除（下架）道具"""
     item = get_object_or_404(Item, pk=pk, seller=request.user)
     if request.method == 'POST':
-        item.status = 'off_shelf'
+        item.status = Item.Status.OFF_SHELF
         item.save(update_fields=['status'])
         messages.success(request, '道具已下架。')
         return redirect('users:profile')

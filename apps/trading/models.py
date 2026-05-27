@@ -2,23 +2,9 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
-from items.models import Item
-
 # Create your models here.
 
 User = get_user_model()
-
-
-class Favorite(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites')
-    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='favorited_by')
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = (('user', 'item'),)
-
-    def __str__(self) -> str:
-        return f"{self.user_id}:{self.item_id}"
 
 
 class TransactionLog(models.Model):
