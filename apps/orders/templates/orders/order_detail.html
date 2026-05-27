@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}订单详情{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">订单详情 #{{ order.id }}</h2>
+    <span class="badge bg-secondary fs-6">{{ order.get_status_display }}</span>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ order.item.name }}</h5>
+                <p class="text-muted">{{ order.item.description|truncatechars:120 }}</p>
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">成交价</dt>
+                    <dd class="col-sm-9">¥{{ order.price }}</dd>
+                    <dt class="col-sm-3">买家</dt>
+                    <dd class="col-sm-9">{{ order.buyer.username }}</dd>
+                    <dt class="col-sm-3">卖家</dt>
+                    <dd class="col-sm-9">{{ order.seller.username }}</dd>
+                    <dt class="col-sm-3">创建时间</dt>
+                    <dd class="col-sm-9">{{ order.created_at|date:'Y-m-d H:i' }}</dd>
+                    <dt class="col-sm-3">支付时间</dt>
+                    <dd class="col-sm-9">{{ order.paid_at|date:'Y-m-d H:i'|default:'-' }}</dd>
+                    <dt class="col-sm-3">发货时间</dt>
+                    <dd class="col-sm-9">{{ order.shipped_at|date:'Y-m-d H:i'|default:'-' }}</dd>
+                    <dt class="col-sm-3">完成时间</dt>
+                    <dd class="col-sm-9">{{ order.completed_at|date:'Y-m-d H:i'|default:'-' }}</dd>
+                    <dt class="col-sm-3">发货信息</dt>
+                    <dd class="col-sm-9">{{ order.shipping_info|linebreaksbr|default:'暂无' }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">可执行操作</h5>
+                <div class="d-grid gap-2">
+                    {% if request.user == order.buyer and order.status == 'pending_payment' %}
+                    <a href="{% url 'orders:pay_order' order.id %}" class="btn btn-primary">模拟支付</a>
+                    {% endif %}
+                    {% if request.user == order.seller and order.status == 'paid' %}
+                    <a href="{% url 'orders:ship_order' order.id %}" class="btn btn-primary">填写发货信息</a>
+                    {% endif %}
+                    {% if request.user == order.buyer and order.status == 'shipped' %}
+                    <a href="{% url 'orders:confirm_receive' order.id %}" class="btn btn-success">确认收货</a>
+                    {% endif %}
+                    <a href="{% url 'orders:buyer_orders' %}" class="btn btn-outline-secondary">返回买家订单</a>
+                    <a href="{% url 'orders:seller_orders' %}" class="btn btn-outline-secondary">返回卖家订单</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

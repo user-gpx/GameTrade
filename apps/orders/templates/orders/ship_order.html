@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}卖家发货{% endblock %}
+
+{% block content %}
+<div class="card mx-auto" style="max-width: 720px;">
+    <div class="card-body">
+        <h2 class="h4 mb-3">填写发货信息</h2>
+        <p class="text-muted">订单 #{{ order.id }}：{{ order.item.name }}</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.shipping_info.label_tag }}
+                {{ form.shipping_info }}
+                {% for error in form.shipping_info.errors %}
+                <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <button class="btn btn-primary">确认发货</button>
+            <a href="{% url 'orders:detail' order.id %}" class="btn btn-outline-secondary">返回</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

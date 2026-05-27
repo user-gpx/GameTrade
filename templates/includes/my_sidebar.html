@@ -1,0 +1,15 @@
+<div class="list-group shadow-sm mb-4">
+    <div class="list-group-item bg-dark text-white">
+        <div class="fw-semibold"><i class="fas fa-user-circle"></i> 我的</div>
+        <small class="text-white-50">{{ user.username }}</small>
+    </div>
+    <a href="{% url 'orders:buyer_orders' %}" class="list-group-item list-group-item-action {% if active_my_menu == 'buyer_orders' %}active{% endif %}">
+        <i class="fas fa-shopping-bag me-2"></i> 买家订单
+    </a>
+    <a href="{% url 'orders:seller_orders' %}" class="list-group-item list-group-item-action {% if active_my_menu == 'seller_orders' %}active{% endif %}">
+        <i class="fas fa-store me-2"></i> 卖家订单
+    </a>
+    <a href="{% url 'users:profile' %}" class="list-group-item list-group-item-action {% if active_my_menu == 'profile' %}active{% endif %}">
+        <i class="fas fa-id-card me-2"></i> 个人资料
+    </a>
+</div>

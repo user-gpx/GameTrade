@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <aside class="col-lg-3">
+        {% include 'includes/my_sidebar.html' %}
+    </aside>
+    <section class="col-lg-9">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="mb-0">{{ title }}</h2>
+            <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-user"></i> 个人资料
+            </a>
+        </div>
+
+        <form method="get" class="row g-2 align-items-end mb-3">
+            <div class="col-md-5">
+                <label class="form-label">订单状态</label>
+                <select name="status" class="form-select">
+                    <option value="">全部状态</option>
+                    {% for value, label in status_choices %}
+                    <option value="{{ value }}" {% if current_status == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-auto">
+                <button class="btn btn-primary">筛选</button>
+                <a href="?" class="btn btn-outline-secondary">重置</a>
+            </div>
+        </form>
+
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>订单号</th>
+                            <th>道具</th>
+                            <th>{% if list_type == 'buyer' %}卖家{% else %}买家{% endif %}</th>
+                            <th>金额</th>
+                            <th>状态</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in page_obj %}
+                        <tr>
+                            <td>#{{ order.id }}</td>
+                            <td>{{ order.item.name }}</td>
+                            <td>{% if list_type == 'buyer' %}{{ order.seller.username }}{% else %}{{ order.buyer.username }}{% endif %}</td>
+                            <td>¥{{ order.price }}</td>
+                            <td><span class="badge bg-secondary">{{ order.get_status_display }}</span></td>
+                            <td>{{ order.created_at|date:'Y-m-d H:i' }}</td>
+                            <td>
+                                <a href="{% url 'orders:detail' order.id %}" class="btn btn-sm btn-outline-secondary">详情</a>
+                                {% if list_type == 'buyer' and order.status == 'pending_payment' %}
+                                    <a href="{% url 'orders:pay_order' order.id %}" class="btn btn-sm btn-primary">支付</a>
+                                {% endif %}
+                                {% if list_type == 'buyer' and order.status == 'shipped' %}
+                                    <a href="{% url 'orders:confirm_receive' order.id %}" class="btn btn-sm btn-success">确认收货</a>
+                                {% endif %}
+                                {% if list_type == 'seller' and order.status == 'paid' %}
+                                    <a href="{% url 'orders:ship_order' order.id %}" class="btn btn-sm btn-primary">发货</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">暂无订单</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <nav class="mt-3">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&status={{ current_status }}">上一页</a></li>
+                {% endif %}
+                <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+                {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&status={{ current_status }}">下一页</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

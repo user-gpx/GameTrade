@@ -17,17 +17,13 @@
             </ul>
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="fas fa-user"></i> {{ user.username }}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/profile/">
+                            <i class="fas fa-user"></i> 我的
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/users/profile/">个人资料</a></li>
-                            <li><a class="dropdown-item" href="/orders/buyer/">我购买的</a></li>
-                            <li><a class="dropdown-item" href="/orders/seller/">我出售的</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/users/logout/">退出</a></li>
-                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/logout/">退出</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
