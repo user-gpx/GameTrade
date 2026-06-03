@@ -28,6 +28,7 @@ urlpatterns = [
     path('orders/', include('orders.urls')),  # 订单模块
     path('stats/', include('stats.urls')),  # 统计模块的所有url
     #不要在这里一条条添加，在你的app中新建urls.py,类似上面这条
+    path('trading/', include('trading.urls')),
 ]
 
 # 开发环境下提供媒体文件服务

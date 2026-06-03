@@ -49,6 +49,10 @@
                         <td><i class="fas fa-user"></i> {{ item.seller.username }}</td>
                     </tr>
                     <tr>
+                        <td class="text-muted">库存</td>
+                        <td><span id="item-stock">{{ item.stock }}</span> 件</td>
+                    </tr>
+                    <tr>
                         <td class="text-muted">发布时间</td>
                         <td>{{ item.created_at|date:"Y-m-d H:i" }}</td>
                     </tr>
@@ -62,9 +66,9 @@
                 <div class="d-flex gap-2 flex-wrap">
                     {% if user.is_authenticated %}
                         {% if item.status == 'available' and item.seller != user %}
-                            <a href="#" class="btn btn-success btn-lg">
+                            <button id="buy-btn" class="btn btn-success btn-lg" data-item-id="{{ item.id }}">
                                 <i class="fas fa-shopping-cart"></i> 立即购买
-                            </a>
+                            </button>
                         {% endif %}
                         
                         <a href="{% url 'items:toggle_favorite' item.pk %}" class="btn {% if is_favorited %}btn-danger{% else %}btn-outline-danger{% endif %} btn-lg" id="favorite-btn">
@@ -137,9 +141,8 @@
 
 {% block extra_js %}
 <script>
-// AJAX收藏功能
 document.addEventListener('DOMContentLoaded', function() {
-    const favoriteBtn = document.getElementById('favorite-btn');
+    var favoriteBtn = document.getElementById('favorite-btn');
     if (favoriteBtn) {
         favoriteBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -149,17 +152,52 @@ document.addEventListener('DOMContentLoaded', function() {
                     'X-CSRFToken': '{{ csrf_token }}',
                 },
             })
-            .then(response => response.json())
-            .then(data => {
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
                 if (data.is_favorited) {
-                    this.classList.remove('btn-outline-danger');
-                    this.classList.add('btn-danger');
-                    this.innerHTML = '<i class="fas fa-heart"></i> 已收藏';
+                    favoriteBtn.classList.remove('btn-outline-danger');
+                    favoriteBtn.classList.add('btn-danger');
+                    favoriteBtn.innerHTML = '<i class="fas fa-heart"></i> 已收藏';
                 } else {
-                    this.classList.remove('btn-danger');
-                    this.classList.add('btn-outline-danger');
-                    this.innerHTML = '<i class="fas fa-heart"></i> 收藏';
+                    favoriteBtn.classList.remove('btn-danger');
+                    favoriteBtn.classList.add('btn-outline-danger');
+                    favoriteBtn.innerHTML = '<i class="fas fa-heart"></i> 收藏';
                 }
+            });
+        });
+    }
+
+    var buyBtn = document.getElementById('buy-btn');
+    if (buyBtn) {
+        buyBtn.addEventListener('click', function() {
+            if (!confirm('确认购买？将直接从余额中扣款 ¥{{ item.price }}。')) return;
+            var btnEl = this;
+            btnEl.disabled = true;
+            btnEl.innerHTML = '<span class="spinner-border spinner-border-sm"></span> 购买中...';
+
+            fetch('/trading/buy_now', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: 'item_id=' + btnEl.dataset.itemId,
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.ok) {
+                    alert('购买成功！订单号：' + data.order_no + '\n当前余额：¥' + data.balance);
+                    location.reload();
+                } else {
+                    alert('购买失败：' + data.error);
+                    btnEl.disabled = false;
+                    btnEl.innerHTML = '<i class="fas fa-shopping-cart"></i> 立即购买';
+                }
+            })
+            .catch(function() {
+                alert('网络错误，请重试');
+                btnEl.disabled = false;
+                btnEl.innerHTML = '<i class="fas fa-shopping-cart"></i> 立即购买';
             });
         });
     }
