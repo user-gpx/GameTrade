@@ -85,6 +85,7 @@ def dashboard(request):
         'latest_orders': latest_orders.distinct().select_related('item', 'buyer', 'seller')[:8],
         'current_year': now.year,
         'current_month': now.month,
+        'active_my_menu': 'stats',
     })
 
 
@@ -112,13 +113,17 @@ def monthly_report(request):
         'reports': reports,
         'year': year,
         'month': month,
+        'active_my_menu': 'stats',
     })
 
 
 @login_required
 def monthly_report_detail(request, pk):
     report = get_object_or_404(MonthlyReport, pk=pk, user=request.user)
-    return render(request, 'stats/monthly_report_detail.html', {'report': report})
+    return render(request, 'stats/monthly_report_detail.html', {
+        'report': report,
+        'active_my_menu': 'stats',
+    })
 
 
 @login_required

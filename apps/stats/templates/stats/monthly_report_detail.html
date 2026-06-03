@@ -3,24 +3,31 @@
 {% block title %}月报详情{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">{{ report.year }}年{{ report.month }}月交易月报</h2>
-    <form method="post" action="{% url 'stats:send_report_email' report.id %}">
-        {% csrf_token %}
-        <button class="btn btn-primary">发送到邮箱</button>
-        <a href="{% url 'stats:monthly_report' %}" class="btn btn-outline-secondary">返回</a>
-    </form>
-</div>
+<div class="row g-4">
+    <aside class="col-lg-3">
+        {% include 'includes/my_sidebar.html' %}
+    </aside>
+    <section class="col-lg-9">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">{{ report.year }}年{{ report.month }}月交易月报</h2>
+            <form method="post" action="{% url 'stats:send_report_email' report.id %}">
+                {% csrf_token %}
+                <button class="btn btn-primary">发送到邮箱</button>
+                <a href="{% url 'stats:monthly_report' %}" class="btn btn-outline-secondary">返回</a>
+            </form>
+        </div>
 
-<div class="card">
-    <div class="card-body">
-        <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit;">{{ report.content }}</pre>
-    </div>
-    <div class="card-footer text-muted">
-        生成时间：{{ report.created_at|date:'Y-m-d H:i' }}
-        {% if report.emailed_at %}
-        ，最近发送：{{ report.emailed_at|date:'Y-m-d H:i' }}
-        {% endif %}
-    </div>
+        <div class="card">
+            <div class="card-body">
+                <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit;">{{ report.content }}</pre>
+            </div>
+            <div class="card-footer text-muted">
+                生成时间：{{ report.created_at|date:'Y-m-d H:i' }}
+                {% if report.emailed_at %}
+                ，最近发送：{{ report.emailed_at|date:'Y-m-d H:i' }}
+                {% endif %}
+            </div>
+        </div>
+    </section>
 </div>
 {% endblock %}

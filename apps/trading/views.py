@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
@@ -16,6 +17,16 @@ from users.models import UserProfile
 from .models import TransactionLog
 
 User = get_user_model()
+
+
+ORDER_STATUS_ALIASES = {
+    'pending_payment': Order.STATUS_PENDING_PAYMENT,
+    'paid': Order.STATUS_PAID,
+    'shipped': Order.STATUS_SHIPPED,
+    'completed': Order.STATUS_COMPLETED,
+    'cancelled': Order.STATUS_CANCELLED,
+    'canceled': Order.STATUS_CANCELLED,
+}
 
 
 def _get_user_from_request(request):
@@ -80,8 +91,10 @@ def buy_now(request):
         seller=item.seller,
         item=item,
         price=item.price,
-        status=Order.Status.PAID,
+        status=Order.STATUS_PAID,
     )
+    order.paid_at = timezone.now()
+    order.save(update_fields=['paid_at'])
 
     Payment.objects.create(
         order=order,
@@ -93,7 +106,6 @@ def buy_now(request):
     return JsonResponse({
         'ok': True,
         'order_id': order.id,
-        'order_no': order.order_no,
         'status': order.status,
         'balance': str(buyer_profile.balance),
     })
@@ -130,10 +142,10 @@ def create_order(request):
         seller=item.seller,
         item=item,
         price=item.price,
-        status=Order.Status.PENDING_PAYMENT,
+        status=Order.STATUS_PENDING_PAYMENT,
     )
 
-    return JsonResponse({'ok': True, 'order_id': order.id, 'order_no': order.order_no, 'status': order.status})
+    return JsonResponse({'ok': True, 'order_id': order.id, 'status': order.status})
 
 
 @csrf_exempt
@@ -155,10 +167,10 @@ def cancel_order(request):
 
     if order.buyer_id != user.id:
         return _json_error('forbidden', status=403)
-    if order.status != Order.Status.PENDING_PAYMENT:
+    if order.status != Order.STATUS_PENDING_PAYMENT:
         return _json_error('order not cancelable')
 
-    order.status = Order.Status.CANCELED
+    order.status = Order.STATUS_CANCELLED
     order.save(update_fields=['status'])
 
     item = Item.objects.select_for_update().get(id=order.item_id)
@@ -189,7 +201,7 @@ def initiate_payment(request):
 
     if order.buyer_id != user.id:
         return _json_error('forbidden', status=403)
-    if order.status != Order.Status.PENDING_PAYMENT:
+    if order.status != Order.STATUS_PENDING_PAYMENT:
         return _json_error('order not payable')
 
     payment, _ = Payment.objects.get_or_create(order=order)
@@ -215,13 +227,12 @@ def payment_callback(request):
 
     order = payment.order
 
-    if order.status != Order.Status.PENDING_PAYMENT:
+    if order.status != Order.STATUS_PENDING_PAYMENT:
         return _json_error('order not in pending_payment')
 
     if result == 'success':
         payment.mark_success()
-        order.status = Order.Status.PAID
-        order.save(update_fields=['status'])
+        order.mark_paid()
 
         item = Item.objects.select_for_update().get(id=order.item_id)
         item.status = Item.Status.SOLD
@@ -251,11 +262,11 @@ def ship_order(request):
 
     if order.seller_id != user.id:
         return _json_error('forbidden', status=403)
-    if order.status != Order.Status.PAID:
+    if order.status != Order.STATUS_PAID:
         return _json_error('order not shippable')
 
-    order.status = Order.Status.SHIPPED
-    order.save(update_fields=['status'])
+    shipping_info = request.POST.get('shipping_info', '交易接口发货')
+    order.mark_shipped(shipping_info)
     return JsonResponse({'ok': True, 'order_id': order.id, 'status': order.status})
 
 
@@ -278,7 +289,7 @@ def confirm_receipt(request):
 
     if order.buyer_id != user.id:
         return _json_error('forbidden', status=403)
-    if order.status != Order.Status.SHIPPED:
+    if order.status != Order.STATUS_SHIPPED:
         return _json_error('order not confirmable')
 
     seller_profile, _ = UserProfile.objects.select_for_update().get_or_create(user_id=order.seller_id)
@@ -291,8 +302,7 @@ def confirm_receipt(request):
         balance_after=seller_profile.balance,
     )
 
-    order.status = Order.Status.COMPLETED
-    order.save(update_fields=['status'])
+    order.mark_completed()
 
     return JsonResponse({'ok': True, 'order_id': order.id, 'status': order.status, 'seller_balance': str(seller_profile.balance)})
 
@@ -303,7 +313,7 @@ def buyer_orders(request):
     if not user:
         return _json_error('invalid user', status=401)
 
-    status = request.GET.get('status')
+    status = ORDER_STATUS_ALIASES.get(request.GET.get('status'), request.GET.get('status'))
     qs = Order.objects.filter(buyer_id=user.id).select_related('item').order_by('-created_at')
     if status:
         qs = qs.filter(status=status)
@@ -313,7 +323,6 @@ def buyer_orders(request):
         data.append(
             {
                 'id': o.id,
-                'order_no': o.order_no,
                 'buyer_id': o.buyer_id,
                 'seller_id': o.seller_id,
                 'item_id': o.item_id,
@@ -332,7 +341,7 @@ def seller_orders(request):
     if not user:
         return _json_error('invalid user', status=401)
 
-    status = request.GET.get('status')
+    status = ORDER_STATUS_ALIASES.get(request.GET.get('status'), request.GET.get('status'))
     qs = Order.objects.filter(seller_id=user.id).select_related('item').order_by('-created_at')
     if status:
         qs = qs.filter(status=status)
@@ -342,7 +351,6 @@ def seller_orders(request):
         data.append(
             {
                 'id': o.id,
-                'order_no': o.order_no,
                 'buyer_id': o.buyer_id,
                 'seller_id': o.seller_id,
                 'item_id': o.item_id,
