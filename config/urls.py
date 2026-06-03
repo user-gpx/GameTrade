@@ -25,7 +25,8 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='pages/index.html'), name='index'),
     path('users/', include('users.urls')),  # 用户模块
     path('items/', include('items.urls')),  # 道具模块
-    path('stats/', include('apps.stats.urls')),  # 统计模块的所有url
+    path('orders/', include('orders.urls')),  # 订单模块
+    path('stats/', include('stats.urls')),  # 统计模块的所有url
     #不要在这里一条条添加，在你的app中新建urls.py,类似上面这条
     path('trading/', include('trading.urls')),
 ]
