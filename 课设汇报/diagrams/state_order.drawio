@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="drawio" version="21.0.0">
+  <diagram name="订单状态图" id="state_order">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Initial Pseudostate -->
+        <mxCell id="initial" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="477" y="40" width="25" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- State: pending_payment (待支付) -->
+        <mxCell id="s_pending" value="待支付&#xa;pending_payment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="400" y="100" width="180" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- State: paid (已支付) -->
+        <mxCell id="s_paid" value="已支付&#xa;paid" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="400" y="280" width="180" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- State: shipped (已发货) -->
+        <mxCell id="s_shipped" value="已发货&#xa;shipped" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="680" y="280" width="180" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- State: completed (已完成) -->
+        <mxCell id="s_completed" value="已完成&#xa;completed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="680" y="480" width="180" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- State: canceled (已取消) -->
+        <mxCell id="s_canceled" value="已取消&#xa;canceled" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="140" y="280" width="180" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Final Pseudostate (outer ring) -->
+        <mxCell id="final" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="755" y="615" width="28" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- Final Pseudostate (inner filled dot) -->
+        <mxCell id="final_dot" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=none;" parent="1" vertex="1">
+          <mxGeometry x="761" y="621" width="16" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- Transition t1: initial → pending_payment -->
+        <mxCell id="t1" value="创建订单" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="initial" target="s_pending" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Transition t2: pending_payment → paid -->
+        <mxCell id="t2" value="支付成功" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="s_pending" target="s_paid" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Transition t3: pending_payment → canceled -->
+        <mxCell id="t3" value="取消 / 超时" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;startArrow=none;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" parent="1" source="s_pending" target="s_canceled" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="140" />
+              <mxPoint x="360" y="320" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Transition t4: paid → shipped -->
+        <mxCell id="t4" value="卖家发货" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;startArrow=none;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="s_paid" target="s_shipped" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Transition t5: shipped → completed -->
+        <mxCell id="t5" value="买家确认收货" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="s_shipped" target="s_completed" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Transition t6: completed → final -->
+        <mxCell id="t6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="s_completed" target="final" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Transition t7: canceled → final -->
+        <mxCell id="t7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="s_canceled" target="final" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="230" y="580" />
+              <mxPoint x="769" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Transition t8: paid → canceled (refund path) -->
+        <mxCell id="t8" value="申请退款" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;startArrow=none;exitX=0;exitY=0.5;entryX=0.5;entryY=1;" parent="1" source="s_paid" target="s_canceled" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="230" y="320" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

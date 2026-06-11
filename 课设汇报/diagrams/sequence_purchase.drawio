@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="drawio" version="21.0.0">
+  <diagram name="一键购买时序图" id="sequence_purchase">
+    <mxGraphModel dx="1400" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ==================== PARTICIPANT HEADERS ==================== -->
+
+        <!-- Buyer (Browser) -->
+        <mxCell id="p_buyer" value="买家&lt;br&gt;Browser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="30" width="100" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Django View / buy_now -->
+        <mxCell id="p_view" value="Django View&lt;br&gt;buy_now" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="280" y="30" width="120" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Item Model -->
+        <mxCell id="p_item" value="Item&lt;br&gt;模型" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="530" y="30" width="90" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- UserProfile Model -->
+        <mxCell id="p_profile" value="UserProfile&lt;br&gt;模型" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="30" width="100" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Order Model -->
+        <mxCell id="p_order" value="Order&lt;br&gt;模型" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="920" y="30" width="90" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Payment Model -->
+        <mxCell id="p_payment" value="Payment&lt;br&gt;模型" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1120" y="30" width="90" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== LIFELINE LINES (vertical dashed edges) ==================== -->
+
+        <!-- Buyer lifeline: center x=90 -->
+        <mxCell id="ll_buyer" value="" style="endArrow=none;html=1;dashed=1;dashPattern=8 4;strokeWidth=1;strokeColor=#999999;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="90" y="75" as="sourcePoint" />
+            <mxPoint x="90" y="850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- View lifeline: center x=340 -->
+        <mxCell id="ll_view" value="" style="endArrow=none;html=1;dashed=1;dashPattern=8 4;strokeWidth=1;strokeColor=#999999;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="340" y="75" as="sourcePoint" />
+            <mxPoint x="340" y="850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Item lifeline: center x=575 -->
+        <mxCell id="ll_item" value="" style="endArrow=none;html=1;dashed=1;dashPattern=8 4;strokeWidth=1;strokeColor=#999999;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="575" y="75" as="sourcePoint" />
+            <mxPoint x="575" y="850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Profile lifeline: center x=770 -->
+        <mxCell id="ll_profile" value="" style="endArrow=none;html=1;dashed=1;dashPattern=8 4;strokeWidth=1;strokeColor=#999999;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="770" y="75" as="sourcePoint" />
+            <mxPoint x="770" y="850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Order lifeline: center x=965 -->
+        <mxCell id="ll_order" value="" style="endArrow=none;html=1;dashed=1;dashPattern=8 4;strokeWidth=1;strokeColor=#999999;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="965" y="75" as="sourcePoint" />
+            <mxPoint x="965" y="850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Payment lifeline: center x=1165 -->
+        <mxCell id="ll_payment" value="" style="endArrow=none;html=1;dashed=1;dashPattern=8 4;strokeWidth=1;strokeColor=#999999;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1165" y="75" as="sourcePoint" />
+            <mxPoint x="1165" y="850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== ACTIVATION BARS ==================== -->
+
+        <!-- Main activation on View (buy_now handler) -->
+        <mxCell id="a_view" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="334" y="105" width="12" height="630" as="geometry" />
+        </mxCell>
+
+        <!-- Activation on Item: step 2 select_for_update -->
+        <mxCell id="a_item1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="569" y="185" width="12" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Activation on Item: step 6 stock deduction -->
+        <mxCell id="a_item2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="569" y="485" width="12" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Activation on UserProfile: balance query + deduct + log -->
+        <mxCell id="a_profile" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="764" y="315" width="12" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- Activation on Order: create order -->
+        <mxCell id="a_order" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="959" y="555" width="12" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Activation on Payment: create payment -->
+        <mxCell id="a_payment" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="1159" y="635" width="12" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== MESSAGES ==================== -->
+
+        <!-- msg1: Buyer -> View: HTTP POST request -->
+        <mxCell id="msg1" value="1. POST /trading/buy/now/  (item_id, user_id)" style="endArrow=block;endFill=1;html=1;rounded=0;fontSize=11;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="140" y="110" as="sourcePoint" />
+            <mxPoint x="334" y="110" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- msg2: View -> Item: select_for_update -->
+        <mxCell id="msg2" value="2. select_for_update(item_id) 悲观锁查询道具" style="endArrow=block;endFill=1;html=1;rounded=0;fontSize=11;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="346" y="190" as="sourcePoint" />
+            <mxPoint x="569" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ret1: Item -> View: return Item object -->
+        <mxCell id="ret1" value="返回 Item 对象" style="endArrow=open;html=1;dashed=1;endFill=0;fontSize=11;fontColor=#666666;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="569" y="220" as="sourcePoint" />
+            <mxPoint x="346" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- msg3: View self-call: check item status and stock -->
+        <mxCell id="msg3" value="3. 检查道具 status(available) 和 stock(&gt;0)" style="endArrow=block;endFill=1;html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;fontSize=11;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="346" y="270" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="390" y="270" />
+              <mxPoint x="390" y="295" />
+            </Array>
+            <mxPoint x="346" y="295" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- msg4: View -> Profile: get_or_create balance -->
+        <mxCell id="msg4" value="4. get_or_create UserProfile (查询买家余额)" style="endArrow=block;endFill=1;html=1;rounded=0;fontSize=11;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="346" y="325" as="sourcePoint" />
+            <mxPoint x="764" y="325" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ret2: Profile -> View: return balance -->
+        <mxCell id="ret2" value="返回 profile.balance" style="endArrow=open;html=1;dashed=1;endFill=0;fontSize=11;fontColor=#666666;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="764" y="360" as="sourcePoint" />
+            <mxPoint x="346" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Validation check: balance >= price -->
+        <mxCell id="msg_val" value="校验: balance &gt;= item.price ?" style="endArrow=block;endFill=1;html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;fontSize=11;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="346" y="390" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="390" y="390" />
+              <mxPoint x="390" y="415" />
+            </Array>
+            <mxPoint x="346" y="415" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- msg5: View -> Profile: deduct balance + create log -->
+        <mxCell id="msg5" value="5. 扣减买家余额 + 创建 TransactionLog" style="endArrow=block;endFill=1;html=1;rounded=0;fontSize=11;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="346" y="440" as="sourcePoint" />
+            <mxPoint x="764" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ret3: Profile -> View: deduction success -->
+        <mxCell id="ret3" value="扣减成功" style="endArrow=open;html=1;dashed=1;endFill=0;fontSize=11;fontColor=#666666;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="764" y="465" as="sourcePoint" />
+            <mxPoint x="346" y="465" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- msg6: View -> Item: deduct stock -->
+        <mxCell id="msg6" value="6. 扣减道具库存 (stock -= 1) + save()" style="endArrow=block;endFill=1;html=1;rounded=0;fontSize=11;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="346" y="490" as="sourcePoint" />
+            <mxPoint x="569" y="490" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ret4: Item -> View: stock updated -->
+        <mxCell id="ret4" value="库存更新成功" style="endArrow=open;html=1;dashed=1;endFill=0;fontSize=11;fontColor=#666666;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="569" y="520" as="sourcePoint" />
+            <mxPoint x="346" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- msg7: View -> Order: create order -->
+        <mxCell id="msg7" value="7. Order.objects.create(status=paid, buyer, seller, item)" style="endArrow=block;endFill=1;html=1;rounded=0;fontSize=11;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="346" y="560" as="sourcePoint" />
+            <mxPoint x="959" y="560" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ret5: Order -> View: return Order object -->
+        <mxCell id="ret5" value="返回 Order 对象" style="endArrow=open;html=1;dashed=1;endFill=0;fontSize=11;fontColor=#666666;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="959" y="590" as="sourcePoint" />
+            <mxPoint x="346" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- msg8: View -> Payment: create payment -->
+        <mxCell id="msg8" value="8. Payment.objects.create(status=success, order, amount)" style="endArrow=block;endFill=1;html=1;rounded=0;fontSize=11;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="346" y="640" as="sourcePoint" />
+            <mxPoint x="1159" y="640" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ret6: Payment -> View: return Payment object -->
+        <mxCell id="ret6" value="返回 Payment 对象" style="endArrow=open;html=1;dashed=1;endFill=0;fontSize=11;fontColor=#666666;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1159" y="670" as="sourcePoint" />
+            <mxPoint x="346" y="670" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- msg9: View -> Buyer: JSON response -->
+        <mxCell id="msg9" value="9. JsonResponse {ok:true, order_id, payment_id, balance}" style="endArrow=block;endFill=1;html=1;rounded=0;fontSize=11;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="334" y="720" as="sourcePoint" />
+            <mxPoint x="140" y="720" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== TRANSACTION SCOPE ==================== -->
+
+        <mxCell id="tx_scope" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#b85450;strokeWidth=2;dashed=1;dashPattern=12 4;" parent="1" vertex="1">
+          <mxGeometry x="310" y="155" width="880" height="550" as="geometry" />
+        </mxCell>
+        <mxCell id="tx_label" value="&lt;font color=&quot;#b85450&quot;&gt;&lt;b&gt;@transaction.atomic 事务范围&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=right;verticalAlign=top;fontSize=12;fontColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="1000" y="160" width="180" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== NOTE ==================== -->
+
+        <mxCell id="note1" value="&lt;b&gt;设计要点&lt;/b&gt;&lt;br&gt;1. select_for_update&lt;br&gt;   使用数据库行级锁&lt;br&gt;   (悲观锁)防止并发超卖&lt;br&gt;2. 整个流程在&lt;br&gt;   transaction.atomic()&lt;br&gt;   事务中执行，失败回滚&lt;br&gt;3. 扣减顺序：&lt;br&gt;   余额 → 库存 → 订单 → 支付" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;" parent="1" vertex="1">
+          <mxGeometry x="1235" y="120" width="150" height="160" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="drawio" version="21.0.0">
+  <diagram name="用例图" id="use_case_diagram">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ==================== Actors ==================== -->
+
+        <!-- Actor 1: 买家 -->
+        <mxCell id="actor1" value="买家&#xa;(Buyer)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="40" y="120" width="40" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Actor 2: 卖家 -->
+        <mxCell id="actor2" value="卖家&#xa;(Seller)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="40" y="350" width="40" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Actor 3: 管理员 -->
+        <mxCell id="actor3" value="管理员&#xa;(Admin)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="40" y="580" width="40" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== System Boundary ==================== -->
+
+        <mxCell id="boundary" value="GameTrade 游戏道具交易平台" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;dashed=1;strokeWidth=2;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="200" y="50" width="550" height="750" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== Use Cases ==================== -->
+
+        <!-- 买家用例 (fillColor=#d5e8d4, strokeColor=#82b366) -->
+        <mxCell id="uc1" value="注册" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="280" y="100" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc2" value="浏览道具" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="280" y="175" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc3" value="搜索道具" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="280" y="250" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc4" value="收藏道具" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="280" y="325" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc5" value="购买道具" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="280" y="400" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc6" value="支付订单" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="280" y="475" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc7" value="确认收货" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="280" y="550" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc8" value="查看订单" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="280" y="625" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc9" value="充值余额" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="280" y="700" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- 卖家用例 (fillColor=#fff2cc, strokeColor=#d6b656) -->
+        <mxCell id="uc10" value="发布道具" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="480" y="175" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc11" value="编辑道具" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="480" y="250" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc12" value="下架道具" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="480" y="325" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc13" value="发货" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="480" y="400" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc14" value="查看销售记录" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="480" y="475" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- 管理员用例 (fillColor=#e1d5e7, strokeColor=#9673a6) -->
+        <mxCell id="uc15" value="管理用户" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+          <mxGeometry x="480" y="600" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc16" value="管理分类" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+          <mxGeometry x="480" y="680" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- 共享用例 - 登录 (fillColor=#f8cecc, strokeColor=#b85450) -->
+        <mxCell id="uc17" value="登录" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="400" y="550" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== Association Edges (Actor to Use Case) ==================== -->
+
+        <mxCell id="e1" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor1" target="uc2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e2" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor1" target="uc3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e3" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor1" target="uc4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e4" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor1" target="uc5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e5" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor1" target="uc6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e6" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor1" target="uc7" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e7" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor1" target="uc8" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e8" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor1" target="uc9" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e9" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor1" target="uc1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e10" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor2" target="uc10" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e11" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor2" target="uc11" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e12" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor2" target="uc12" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e13" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor2" target="uc13" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e14" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor2" target="uc14" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e15" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor3" target="uc15" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e16" value="" style="endArrow=none;html=1;rounded=0;startArrow=none;" parent="1" source="actor3" target="uc16" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== Include Dependency Edges (dashed, <<include>>) ==================== -->
+
+        <mxCell id="ei1" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;startArrow=none;" parent="1" source="uc1" target="uc17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ei2" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;startArrow=none;" parent="1" source="uc5" target="uc17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ei3" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;startArrow=none;" parent="1" source="uc6" target="uc17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ei4" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;startArrow=none;" parent="1" source="uc10" target="uc17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ei5" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;startArrow=none;" parent="1" source="uc13" target="uc17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-06-11T00:00:00.000Z" agent="drawio" version="21.0.0">
+  <diagram name="GameTrade Domain Model" id="class_diagram">
+    <mxGraphModel dx="1400" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ============================================================ -->
+        <!-- CLASS: User (Django Auth)  --  top-left                       -->
+        <!-- ============================================================ -->
+        <mxCell id="cls_user" value="User (Django Auth)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="60" y="30" width="210" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_user_sep1" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_user" vertex="1">
+          <mxGeometry y="30" width="210" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_user_attr" value="+ id: IntegerField&#xa;+ username: CharField&#xa;+ email: EmailField&#xa;+ password: CharField&#xa;+ date_joined: DateTimeField&#xa;+ is_active: BooleanField&#xa;+ is_staff: BooleanField" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_user" vertex="1">
+          <mxGeometry y="38" width="210" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_user_sep2" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_user" vertex="1">
+          <mxGeometry y="130" width="210" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_user_meth" value="+ check_password(raw): bool&#xa;+ set_password(raw)&#xa;+ get_full_name(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_user" vertex="1">
+          <mxGeometry y="138" width="210" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- CLASS: UserProfile  --  top-center                            -->
+        <!-- ============================================================ -->
+        <mxCell id="cls_profile" value="UserProfile" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="360" y="30" width="220" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_profile_sep1" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_profile" vertex="1">
+          <mxGeometry y="30" width="220" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_profile_attr" value="- user: FK &#10230; User (OneToOne)&#xa;- avatar: ImageField&#xa;- phone: CharField&#xa;- bio: TextField&#xa;- balance: DecimalField&#xa;- created_at: DateTimeField&#xa;- updated_at: DateTimeField" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_profile" vertex="1">
+          <mxGeometry y="38" width="220" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_profile_sep2" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_profile" vertex="1">
+          <mxGeometry y="130" width="220" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_profile_meth" value="+ get_avatar_url(): str&#xa;+ __str__(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_profile" vertex="1">
+          <mxGeometry y="138" width="220" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- CLASS: Category  --  top-right                                 -->
+        <!-- ============================================================ -->
+        <mxCell id="cls_category" value="Category" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="670" y="30" width="200" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_category_sep1" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_category" vertex="1">
+          <mxGeometry y="30" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_category_attr" value="- name: CharField (unique)&#xa;- description: TextField&#xa;- icon: CharField&#xa;- created_at: DateTimeField" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_category" vertex="1">
+          <mxGeometry y="38" width="200" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_category_sep2" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_category" vertex="1">
+          <mxGeometry y="90" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_category_meth" value="+ __str__(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_category" vertex="1">
+          <mxGeometry y="98" width="200" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- CLASS: Item  --  middle-center  (green)                        -->
+        <!-- ============================================================ -->
+        <mxCell id="cls_item" value="Item" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="360" y="260" width="230" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_item_sep1" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_item" vertex="1">
+          <mxGeometry y="30" width="230" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_item_attr" value="- name: CharField&#xa;- category: FK &#10230; Category&#xa;- game: CharField [choices]&#xa;- price: DecimalField&#xa;- stock: PositiveIntegerField&#xa;- description: TextField&#xa;- image: ImageField&#xa;- seller: FK &#10230; User&#xa;- status: CharField [Status]&#xa;- views_count: PositiveIntegerField&#xa;- created_at: DateTimeField&#xa;- updated_at: DateTimeField" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_item" vertex="1">
+          <mxGeometry y="38" width="230" height="152" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_item_sep2" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_item" vertex="1">
+          <mxGeometry y="190" width="230" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_item_meth" value="+ get_status_display_class(): str&#xa;+ __str__(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_item" vertex="1">
+          <mxGeometry y="198" width="230" height="62" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- CLASS: Order  --  middle-left  (yellow)                        -->
+        <!-- ============================================================ -->
+        <mxCell id="cls_order" value="Order" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="60" y="270" width="230" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_order_sep1" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_order" vertex="1">
+          <mxGeometry y="30" width="230" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_order_attr" value="- order_no: CharField (unique)&#xa;- buyer: FK &#10230; User&#xa;- seller: FK &#10230; User&#xa;- item: FK &#10230; Item&#xa;- price: DecimalField&#xa;- status: CharField [Status]&#xa;- created_at: DateTimeField" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_order" vertex="1">
+          <mxGeometry y="38" width="230" height="102" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_order_sep2" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_order" vertex="1">
+          <mxGeometry y="140" width="230" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_order_meth" value="+ save(): auto-gen order_no&#xa;+ __str__(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_order" vertex="1">
+          <mxGeometry y="148" width="230" height="72" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- CLASS: Payment  --  bottom-center  (purple)                    -->
+        <!-- ============================================================ -->
+        <mxCell id="cls_payment" value="Payment" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+          <mxGeometry x="360" y="570" width="220" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_payment_sep1" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_payment" vertex="1">
+          <mxGeometry y="30" width="220" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_payment_attr" value="- payment_no: CharField (unique)&#xa;- order: FK &#10230; Order (OneToOne)&#xa;- pay_method: CharField&#xa;- pay_status: CharField [Status]&#xa;- amount: DecimalField&#xa;- created_at: DateTimeField" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_payment" vertex="1">
+          <mxGeometry y="38" width="220" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_payment_sep2" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_payment" vertex="1">
+          <mxGeometry y="130" width="220" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_payment_meth" value="+ save(): auto-gen payment_no&#xa;+ mark_success()&#xa;+ mark_failed()&#xa;+ __str__(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_payment" vertex="1">
+          <mxGeometry y="138" width="220" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- CLASS: TransactionLog  --  bottom-left  (red)                  -->
+        <!-- ============================================================ -->
+        <mxCell id="cls_translog" value="TransactionLog" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="60" y="550" width="220" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_translog_sep1" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_translog" vertex="1">
+          <mxGeometry y="30" width="220" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_translog_attr" value="- user: FK &#10230; User&#xa;- amount: DecimalField&#xa;- type: CharField [credit/debit]&#xa;- balance_after: DecimalField&#xa;- created_at: DateTimeField" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_translog" vertex="1">
+          <mxGeometry y="38" width="220" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_translog_sep2" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_translog" vertex="1">
+          <mxGeometry y="110" width="220" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_translog_meth" value="+ __str__(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_translog" vertex="1">
+          <mxGeometry y="118" width="220" height="52" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- CLASS: Favorite  --  middle-right  (orange)                    -->
+        <!-- ============================================================ -->
+        <mxCell id="cls_fav" value="Favorite" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="670" y="310" width="200" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_fav_sep1" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_fav" vertex="1">
+          <mxGeometry y="30" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_fav_attr" value="- user: FK &#10230; User&#xa;- item: FK &#10230; Item&#xa;- created_at: DateTimeField" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_fav" vertex="1">
+          <mxGeometry y="38" width="200" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_fav_sep2" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="cls_fav" vertex="1">
+          <mxGeometry y="100" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_fav_meth" value="+ __str__(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;" parent="cls_fav" vertex="1">
+          <mxGeometry y="108" width="200" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- EDGES / RELATIONSHIPS                                          -->
+        <!-- ============================================================ -->
+
+        <!-- User 1:1 UserProfile -->
+        <mxCell id="edge_user_profile" value="1:1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;startArrow=none;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="cls_user" target="cls_profile" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Item N:1 Category -->
+        <mxCell id="edge_item_category" value="N:1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;startArrow=none;endFill=0;strokeWidth=1.5;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="cls_item" target="cls_category" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Item N:1 User (seller) -->
+        <mxCell id="edge_item_seller" value="N:1 (seller)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;startArrow=none;endFill=0;strokeWidth=1.5;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" parent="1" source="cls_item" target="cls_user" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Order N:1 User (buyer) -->
+        <mxCell id="edge_order_buyer" value="N:1 (buyer)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;startArrow=none;endFill=0;strokeWidth=1.5;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="cls_order" target="cls_user" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="175" y="245" />
+              <mxPoint x="165" y="245" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Order N:1 User (seller) -->
+        <mxCell id="edge_order_seller" value="N:1 (seller)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;startArrow=none;endFill=0;strokeWidth=1.5;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="cls_order" target="cls_user" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="40" y="380" />
+              <mxPoint x="40" y="120" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Order N:1 Item -->
+        <mxCell id="edge_order_item" value="N:1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;startArrow=none;endFill=0;strokeWidth=1.5;exitX=1;exitY=0.33;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="cls_order" target="cls_item" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Payment 1:1 Order -->
+        <mxCell id="edge_payment_order" value="1:1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;startArrow=none;strokeWidth=1.5;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" parent="1" source="cls_payment" target="cls_order" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="300" y="660" />
+              <mxPoint x="300" y="510" />
+              <mxPoint x="233" y="510" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- TransactionLog N:1 User -->
+        <mxCell id="edge_translog_user" value="N:1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;startArrow=none;endFill=0;strokeWidth=1.5;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="cls_translog" target="cls_user" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="170" y="240" />
+              <mxPoint x="165" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Favorite N:1 User -->
+        <mxCell id="edge_fav_user" value="N:1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;startArrow=none;endFill=0;strokeWidth=1.5;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.85;entryDx=0;entryDy=0;" parent="1" source="cls_fav" target="cls_user" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="480" />
+              <mxPoint x="290" y="480" />
+              <mxPoint x="290" y="183" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Favorite N:1 Item -->
+        <mxCell id="edge_fav_item" value="N:1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;startArrow=none;endFill=0;strokeWidth=1.5;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" parent="1" source="cls_fav" target="cls_item" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
