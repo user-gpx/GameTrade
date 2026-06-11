@@ -59,6 +59,7 @@ def user_profile(request):
     return render(request, 'users/profile.html', {
         'profile': profile,
         'user_items': user_items,
+        'active_my_menu': 'profile',
     })
 
 

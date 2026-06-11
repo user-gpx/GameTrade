@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}确认收货{% endblock %}
+
+{% block content %}
+<div class="card mx-auto" style="max-width: 640px;">
+    <div class="card-body">
+        <h2 class="h4 mb-3">确认收货</h2>
+        <p>订单 #{{ order.id }}：{{ order.item.name }}</p>
+        <p class="text-muted">确认后订单将变为已完成。</p>
+        <form method="post">
+            {% csrf_token %}
+            <button class="btn btn-success">确认已收货</button>
+            <a href="{% url 'orders:detail' order.id %}" class="btn btn-outline-secondary">返回</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
