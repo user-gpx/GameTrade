@@ -3,6 +3,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import RegisterForm, LoginForm, UserForm, ProfileForm
+from trading.models import RechargeRequest
 
 
 def user_register(request):
@@ -80,4 +81,14 @@ def edit_profile(request):
     return render(request, 'users/edit_profile.html', {
         'user_form': user_form,
         'profile_form': profile_form,
+    })
+
+
+@login_required
+def recharge_page(request):
+    """充值页面：自定义金额充值申请"""
+    recharge_requests = RechargeRequest.objects.filter(user=request.user).order_by('-created_at')[:20]
+    return render(request, 'users/recharge.html', {
+        'recharge_requests': recharge_requests,
+        'active_my_menu': 'recharge',
     })
