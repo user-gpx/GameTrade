@@ -40,17 +40,17 @@ class TradingFlowTests(TestCase):
         self.assertEqual(r.status_code, 200)
 
         order = Order.objects.get(id=order_id)
-        self.assertEqual(order.status, Order.Status.PAID)
+        self.assertEqual(order.status, Order.STATUS_PAID)
 
         r = self.client.post('/trading/order/ship', {'user_id': self.seller.id, 'order_id': order_id})
         self.assertEqual(r.status_code, 200)
         order.refresh_from_db()
-        self.assertEqual(order.status, Order.Status.SHIPPED)
+        self.assertEqual(order.status, Order.STATUS_SHIPPED)
 
         r = self.client.post('/trading/order/confirm', {'user_id': self.buyer.id, 'order_id': order_id})
         self.assertEqual(r.status_code, 200)
         order.refresh_from_db()
-        self.assertEqual(order.status, Order.Status.COMPLETED)
+        self.assertEqual(order.status, Order.STATUS_COMPLETED)
 
         seller_profile = UserProfile.objects.get(user=self.seller)
         self.assertEqual(str(seller_profile.balance), '10.00')
@@ -62,7 +62,7 @@ class TradingFlowTests(TestCase):
         r = self.client.post('/trading/order/cancel', {'user_id': self.buyer.id, 'order_id': order_id})
         self.assertEqual(r.status_code, 200)
         order = Order.objects.get(id=order_id)
-        self.assertEqual(order.status, Order.Status.CANCELED)
+        self.assertEqual(order.status, Order.STATUS_CANCELLED)
 
         item = Item.objects.get(id=self.item.id)
         self.assertEqual(item.stock, 1)

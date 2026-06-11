@@ -13,7 +13,7 @@ from orders.models import Order
 from payments.models import Payment
 from users.models import UserProfile
 
-from .models import TransactionLog
+from .models import RechargeRequest, TransactionLog
 
 User = get_user_model()
 
@@ -80,7 +80,7 @@ def buy_now(request):
         seller=item.seller,
         item=item,
         price=item.price,
-        status=Order.Status.PAID,
+        status=Order.STATUS_PAID,
     )
 
     Payment.objects.create(
@@ -130,7 +130,7 @@ def create_order(request):
         seller=item.seller,
         item=item,
         price=item.price,
-        status=Order.Status.PENDING_PAYMENT,
+        status=Order.STATUS_PENDING_PAYMENT,
     )
 
     return JsonResponse({'ok': True, 'order_id': order.id, 'order_no': order.order_no, 'status': order.status})
@@ -155,10 +155,10 @@ def cancel_order(request):
 
     if order.buyer_id != user.id:
         return _json_error('forbidden', status=403)
-    if order.status != Order.Status.PENDING_PAYMENT:
+    if order.status != Order.STATUS_PENDING_PAYMENT:
         return _json_error('order not cancelable')
 
-    order.status = Order.Status.CANCELED
+    order.status = Order.STATUS_CANCELLED
     order.save(update_fields=['status'])
 
     item = Item.objects.select_for_update().get(id=order.item_id)
@@ -189,7 +189,7 @@ def initiate_payment(request):
 
     if order.buyer_id != user.id:
         return _json_error('forbidden', status=403)
-    if order.status != Order.Status.PENDING_PAYMENT:
+    if order.status != Order.STATUS_PENDING_PAYMENT:
         return _json_error('order not payable')
 
     payment, _ = Payment.objects.get_or_create(order=order)
@@ -215,12 +215,12 @@ def payment_callback(request):
 
     order = payment.order
 
-    if order.status != Order.Status.PENDING_PAYMENT:
+    if order.status != Order.STATUS_PENDING_PAYMENT:
         return _json_error('order not in pending_payment')
 
     if result == 'success':
         payment.mark_success()
-        order.status = Order.Status.PAID
+        order.status = Order.STATUS_PAID
         order.save(update_fields=['status'])
 
         item = Item.objects.select_for_update().get(id=order.item_id)
@@ -251,10 +251,10 @@ def ship_order(request):
 
     if order.seller_id != user.id:
         return _json_error('forbidden', status=403)
-    if order.status != Order.Status.PAID:
+    if order.status != Order.STATUS_PAID:
         return _json_error('order not shippable')
 
-    order.status = Order.Status.SHIPPED
+    order.status = Order.STATUS_SHIPPED
     order.save(update_fields=['status'])
     return JsonResponse({'ok': True, 'order_id': order.id, 'status': order.status})
 
@@ -278,7 +278,7 @@ def confirm_receipt(request):
 
     if order.buyer_id != user.id:
         return _json_error('forbidden', status=403)
-    if order.status != Order.Status.SHIPPED:
+    if order.status != Order.STATUS_SHIPPED:
         return _json_error('order not confirmable')
 
     seller_profile, _ = UserProfile.objects.select_for_update().get_or_create(user_id=order.seller_id)
@@ -291,7 +291,7 @@ def confirm_receipt(request):
         balance_after=seller_profile.balance,
     )
 
-    order.status = Order.Status.COMPLETED
+    order.status = Order.STATUS_COMPLETED
     order.save(update_fields=['status'])
 
     return JsonResponse({'ok': True, 'order_id': order.id, 'status': order.status, 'seller_balance': str(seller_profile.balance)})
@@ -359,21 +359,58 @@ def seller_orders(request):
 @require_POST
 @transaction.atomic
 def recharge(request):
-    """模拟充值：默认充值100元"""
+    """充值申请：提交审核，管理员审核通过后到账"""
     user = _get_user_from_request(request)
     if not user:
         return _json_error('请先登录', status=401)
-    amount = Decimal(request.POST.get('amount', '100'))
-    profile, _ = UserProfile.objects.select_for_update().get_or_create(user=user)
-    profile.balance = Decimal(profile.balance) + amount
-    profile.save(update_fields=['balance'])
-    TransactionLog.objects.create(
+
+    try:
+        amount = Decimal(request.POST.get('amount', '0'))
+    except Exception:
+        return _json_error('金额格式不正确')
+
+    if amount <= 0:
+        return _json_error('充值金额必须大于0')
+
+    if amount > 100000:
+        return _json_error('单次充值金额不能超过 ¥100,000')
+
+    req = RechargeRequest.objects.create(
         user=user,
         amount=amount,
-        type=TransactionLog.Type.CREDIT,
-        balance_after=profile.balance,
+        status=RechargeRequest.Status.PENDING,
     )
-    return JsonResponse({'ok': True, 'balance': str(profile.balance), 'amount': str(amount)})
+
+    return JsonResponse({
+        'ok': True,
+        'request_id': req.id,
+        'amount': str(req.amount),
+        'status': req.status,
+        'status_display': req.get_status_display(),
+        'message': '充值申请已提交，请等待管理员审核',
+    })
+
+
+@csrf_exempt
+def recharge_requests(request):
+    """查询用户充值申请记录"""
+    user = _get_user_from_request(request)
+    if not user:
+        return _json_error('请先登录', status=401)
+
+    qs = RechargeRequest.objects.filter(user=user).order_by('-created_at')[:50]
+    data = []
+    for r in qs:
+        data.append({
+            'id': r.id,
+            'amount': str(r.amount),
+            'status': r.status,
+            'status_display': r.get_status_display(),
+            'created_at': r.created_at.isoformat() if r.created_at else None,
+            'reviewed_at': r.reviewed_at.isoformat() if r.reviewed_at else None,
+        })
+
+    return JsonResponse({'ok': True, 'requests': data})
 
 
 @login_required
