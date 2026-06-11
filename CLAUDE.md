@@ -6,7 +6,7 @@
 
 ```bash
 # 创建并激活 conda 环境
-conda create -n gametrade python=3.10 -y
+
 conda activate gametrade
 
 # 安装依赖

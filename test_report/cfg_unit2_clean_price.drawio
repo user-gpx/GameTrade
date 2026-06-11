@@ -1,0 +1,69 @@
+<mxfile host="app.diagrams.net" modified="2026-06-10T00:00:00.000Z" agent="Claude" version="24.0.0">
+  <diagram name="Unit2-clean_price控制流图" id="cfg-unit2">
+    <mxGraphModel dx="1000" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="700" pageHeight="500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Entry -->
+        <mxCell id="entry" value="Entry" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="270" y="30" width="100" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- N1: price = cleaned_data.get -->
+        <mxCell id="n1" value="N1: price = cleaned_data.get('price')" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="220" y="110" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;" edge="1" parent="1" source="entry" target="n1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- P1: Compound condition (diamond) -->
+        <mxCell id="p1" value="P1: price is not None&#xa;AND price &lt;= 0 ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="220" y="200" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;" edge="1" parent="1" source="n1" target="p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- E1: raise ValidationError -->
+        <mxCell id="e1_node" value="E1: raise ValidationError(&#xa;'价格必须大于0')" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="470" y="210" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="p1" target="e1_node">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- T label -->
+        <mxCell id="lbl_t" value="T (price=None or price≤0)" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=10;fillColor=#f8cecc;" vertex="1" connectable="0" parent="e_1">
+          <mxGeometry x="-0.1" relative="1" as="geometry">
+            <mxPoint x="-5" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- E2: return price -->
+        <mxCell id="e2_node" value="E2: return price" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="235" y="360" width="170" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="p1" target="e2_node">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_f" value="F (price>0)" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fillColor=#d5e8d4;" vertex="1" connectable="0" parent="e_2">
+          <mxGeometry x="-0.1" relative="1" as="geometry">
+            <mxPoint x="-10" y="5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Condition breakdown -->
+        <mxCell id="cond_breakdown" value="条件分解:&#xa;C1 = (price is not None)&#xa;C2 = (price &lt;= 0)&#xa;判定 D = C1 AND C2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="360" width="170" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- V(G) -->
+        <mxCell id="legend" value="V(G) = 1 + 1 = 2&#xa;基本路径数 = 2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="470" y="360" width="170" height="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
