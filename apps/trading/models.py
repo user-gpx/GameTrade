@@ -32,6 +32,8 @@ class RechargeRequest(models.Model):
     created_at = models.DateTimeField(default=timezone.now, verbose_name='申请时间')
     reviewed_at = models.DateTimeField(null=True, blank=True, verbose_name='审核时间')
     reviewed_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='reviewed_recharges', verbose_name='审核人')
+    out_trade_no = models.CharField(max_length=64, unique=True, null=True, blank=True, verbose_name='商户订单号')
+    trade_no = models.CharField(max_length=64, null=True, blank=True, verbose_name='支付宝交易号')
 
     class Meta:
         ordering = ['-created_at']

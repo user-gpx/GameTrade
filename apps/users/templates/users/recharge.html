@@ -43,7 +43,7 @@
                     </div>
                     <div class="col-md-6 text-md-end mt-3 mt-md-0">
                         <small class="text-muted">
-                            <i class="fas fa-info-circle"></i> 充值提交后需管理员审核，审核通过后自动到账
+                            <i class="fas fa-info-circle"></i> 提交后将跳转到支付宝完成支付，支付成功后自动到账
                         </small>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
                         <small class="text-muted">单次充值金额范围：¥1 ~ ¥100,000</small>
                     </div>
                     <button type="submit" class="btn btn-primary px-4" id="submit-btn">
-                        <i class="fas fa-paper-plane"></i> 提交充值申请
+                        <i class="fab fa-alipay"></i> 前往支付宝支付
                     </button>
                 </form>
                 <div id="result-msg" class="mt-3" style="display:none;"></div>
@@ -175,20 +175,18 @@ $(function() {
             csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
         })
         .done(function(res) {
-            if (res.ok) {
-                showMsg('<i class="fas fa-check-circle"></i> ' + res.message, 'success');
-                $('#recharge-form')[0].reset();
-                $('.amount-preset').removeClass('active');
-                loadRequests();
+            if (res.ok && res.pay_url) {
+                showMsg('<i class="fas fa-spinner fa-spin"></i> 正在跳转到支付宝支付页面...', 'info');
+                window.location.href = res.pay_url;
             } else {
-                showMsg('<i class="fas fa-exclamation-triangle"></i> ' + res.error, 'danger');
+                showMsg('<i class="fas fa-exclamation-triangle"></i> ' + (res.error || '请求失败'), 'danger');
             }
         })
         .fail(function() {
             showMsg('网络错误，请稍后重试', 'danger');
         })
         .always(function() {
-            $btn.prop('disabled', false).html('<i class="fas fa-paper-plane"></i> 提交充值申请');
+            $btn.prop('disabled', false).html('<i class="fab fa-alipay"></i> 前往支付宝支付');
         });
     });
 

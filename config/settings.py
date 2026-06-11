@@ -141,3 +141,11 @@ LOGOUT_REDIRECT_URL = '/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ==================== 支付宝沙箱配置 ====================
+ALIPAY_APPID = '9021000164667655'
+ALIPAY_GATEWAY = 'https://openapi-sandbox.dl.alipaydev.com/gateway.do'
+ALIPAY_RETURN_URL = 'http://127.0.0.1:8000/trading/alipay/return'
+ALIPAY_NOTIFY_URL = 'http://127.0.0.1:8000/trading/alipay/notify'
+ALIPAY_APP_PRIVATE_KEY_PATH = BASE_DIR / 'keys' / 'app_private_key.pem'
+ALIPAY_PUBLIC_KEY_PATH = BASE_DIR / 'keys' / 'alipay_public_key.pem'
