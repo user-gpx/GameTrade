@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}充值结果 - 游戏道具交易平台{% endblock %}
+
+{% block extra_css %}
+<style>
+    .result-card {
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        max-width: 500px;
+        margin: 60px auto;
+    }
+    .result-icon { font-size: 64px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card result-card">
+    <div class="card-body text-center p-5">
+        {% if success %}
+            <div class="text-success mb-3 result-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3 class="text-success mb-3">支付成功</h3>
+            <p class="lead">{{ message }}</p>
+            {% if balance %}
+                <p>当前余额: <strong class="text-primary">¥{{ balance }}</strong></p>
+            {% endif %}
+            <a href="{% url 'users:recharge' %}" class="btn btn-primary mt-3">
+                <i class="fas fa-arrow-left"></i> 返回充值中心
+            </a>
+        {% else %}
+            <div class="text-danger mb-3 result-icon">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <h3 class="text-danger mb-3">支付未完成</h3>
+            <p>{{ message }}</p>
+            <div class="mt-3">
+                <a href="{% url 'users:recharge' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-redo"></i> 重新充值
+                </a>
+                <a href="{% url 'users:profile' %}" class="btn btn-primary ms-2">
+                    <i class="fas fa-user"></i> 个人中心
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
