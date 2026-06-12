@@ -1,9 +1,10 @@
 from decimal import Decimal
+import uuid
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -14,7 +15,7 @@ from orders.models import Order
 from payments.models import Payment
 from users.models import UserProfile
 
-from .models import TransactionLog
+from .models import RechargeRequest, TransactionLog
 
 User = get_user_model()
 
@@ -367,21 +368,192 @@ def seller_orders(request):
 @require_POST
 @transaction.atomic
 def recharge(request):
-    """模拟充值：默认充值100元"""
+    """充值：生成支付宝支付链接，跳转沙箱支付"""
     user = _get_user_from_request(request)
     if not user:
         return _json_error('请先登录', status=401)
-    amount = Decimal(request.POST.get('amount', '100'))
-    profile, _ = UserProfile.objects.select_for_update().get_or_create(user=user)
-    profile.balance = Decimal(profile.balance) + amount
-    profile.save(update_fields=['balance'])
-    TransactionLog.objects.create(
+
+    try:
+        amount = Decimal(request.POST.get('amount', '0'))
+    except Exception:
+        return _json_error('金额格式不正确')
+
+    if amount <= 0:
+        return _json_error('充值金额必须大于0')
+
+    if amount > 100000:
+        return _json_error('单次充值金额不能超过 ¥100,000')
+
+    out_trade_no = uuid.uuid4().hex[:32]
+
+    from .alipay_util import get_alipay_client
+    alipay = get_alipay_client()
+
+    order_string = alipay.api_alipay_trade_page_pay(
+        out_trade_no=out_trade_no,
+        total_amount=str(amount),
+        subject=f'游戏道具交易平台-账户充值 ¥{amount}',
+        return_url=request.build_absolute_uri('/trading/alipay/return'),
+        notify_url=request.build_absolute_uri('/trading/alipay/notify'),
+    )
+
+    RechargeRequest.objects.create(
         user=user,
         amount=amount,
-        type=TransactionLog.Type.CREDIT,
-        balance_after=profile.balance,
+        status=RechargeRequest.Status.PENDING,
+        out_trade_no=out_trade_no,
     )
-    return JsonResponse({'ok': True, 'balance': str(profile.balance), 'amount': str(amount)})
+
+    pay_url = 'https://openapi-sandbox.dl.alipaydev.com/gateway.do?' + order_string
+
+    return JsonResponse({
+        'ok': True,
+        'pay_url': pay_url,
+        'out_trade_no': out_trade_no,
+        'amount': str(amount),
+    })
+
+
+@csrf_exempt
+def recharge_requests(request):
+    """查询用户充值申请记录"""
+    user = _get_user_from_request(request)
+    if not user:
+        return _json_error('请先登录', status=401)
+
+    qs = RechargeRequest.objects.filter(user=user).order_by('-created_at')[:50]
+    data = []
+    for r in qs:
+        data.append({
+            'id': r.id,
+            'amount': str(r.amount),
+            'status': r.status,
+            'status_display': r.get_status_display(),
+            'created_at': r.created_at.isoformat() if r.created_at else None,
+            'reviewed_at': r.reviewed_at.isoformat() if r.reviewed_at else None,
+        })
+
+    return JsonResponse({'ok': True, 'requests': data})
+
+
+@csrf_exempt
+def alipay_return(request):
+    """支付宝同步回调：支付完成后浏览器跳回此页面"""
+    from .alipay_util import get_alipay_client
+    alipay = get_alipay_client()
+
+    data = request.GET.dict()
+    sign = data.pop('sign', None)
+
+    if not sign or not alipay.verify(data, sign):
+        return render(request, 'users/recharge_result.html', {
+            'success': False,
+            'message': '签名验证失败，请联系管理员',
+        })
+
+    out_trade_no = data.get('out_trade_no')
+    trade_no = data.get('trade_no')
+
+    if not out_trade_no:
+        return render(request, 'users/recharge_result.html', {
+            'success': False,
+            'message': '缺少订单号',
+        })
+
+    with transaction.atomic():
+        req = RechargeRequest.objects.select_for_update().filter(out_trade_no=out_trade_no).first()
+        if not req:
+            return render(request, 'users/recharge_result.html', {
+                'success': False,
+                'message': '订单不存在',
+            })
+
+        if req.status == RechargeRequest.Status.APPROVED:
+            return render(request, 'users/recharge_result.html', {
+                'success': True,
+                'amount': str(req.amount),
+                'message': f'充值 ¥{req.amount} 已到账',
+            })
+
+        # 主动查询支付宝确认支付状态
+        query_result = alipay.api_alipay_trade_query(out_trade_no=out_trade_no)
+        trade_status = query_result.get('trade_status', '')
+
+        if trade_status in ('TRADE_SUCCESS', 'TRADE_FINISHED'):
+            profile, _ = UserProfile.objects.select_for_update().get_or_create(user=req.user)
+            profile.balance = Decimal(profile.balance) + Decimal(req.amount)
+            profile.save(update_fields=['balance'])
+
+            TransactionLog.objects.create(
+                user=req.user,
+                amount=req.amount,
+                type=TransactionLog.Type.CREDIT,
+                balance_after=profile.balance,
+            )
+
+            req.status = RechargeRequest.Status.APPROVED
+            req.trade_no = trade_no or query_result.get('trade_no', '')
+            req.reviewed_at = timezone.now()
+            req.save(update_fields=['status', 'trade_no', 'reviewed_at'])
+
+            return render(request, 'users/recharge_result.html', {
+                'success': True,
+                'amount': str(req.amount),
+                'balance': str(profile.balance),
+                'message': f'充值 ¥{req.amount} 已到账',
+            })
+        else:
+            return render(request, 'users/recharge_result.html', {
+                'success': False,
+                'amount': str(req.amount),
+                'message': f'支付状态: {trade_status}，请稍后刷新查看',
+            })
+
+
+@csrf_exempt
+def alipay_notify(request):
+    """支付宝异步通知：支付宝服务器 POST 通知支付结果"""
+    from .alipay_util import get_alipay_client
+    alipay = get_alipay_client()
+
+    data = request.POST.dict()
+    sign = data.pop('sign', None)
+
+    if not sign or not alipay.verify(data, sign):
+        return HttpResponse('FAIL')
+
+    trade_status = data.get('trade_status', '')
+    if trade_status not in ('TRADE_SUCCESS', 'TRADE_FINISHED'):
+        return HttpResponse('FAIL')
+
+    out_trade_no = data.get('out_trade_no')
+    trade_no = data.get('trade_no')
+
+    with transaction.atomic():
+        req = RechargeRequest.objects.select_for_update().filter(out_trade_no=out_trade_no).first()
+        if not req:
+            return HttpResponse('FAIL')
+
+        if req.status == RechargeRequest.Status.APPROVED:
+            return HttpResponse('success')
+
+        profile, _ = UserProfile.objects.select_for_update().get_or_create(user=req.user)
+        profile.balance = Decimal(profile.balance) + Decimal(req.amount)
+        profile.save(update_fields=['balance'])
+
+        TransactionLog.objects.create(
+            user=req.user,
+            amount=req.amount,
+            type=TransactionLog.Type.CREDIT,
+            balance_after=profile.balance,
+        )
+
+        req.status = RechargeRequest.Status.APPROVED
+        req.trade_no = trade_no
+        req.reviewed_at = timezone.now()
+        req.save(update_fields=['status', 'trade_no', 'reviewed_at'])
+
+    return HttpResponse('success')
 
 
 @login_required

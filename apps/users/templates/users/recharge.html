@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+
+{% block title %}账户充值 - 游戏道具交易平台{% endblock %}
+
+{% block extra_css %}
+<style>
+    .recharge-card {
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    .amount-preset {
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .amount-preset:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+    }
+    .amount-preset.active {
+        border: 2px solid #667eea;
+        background: rgba(102,126,234,0.08);
+    }
+    .status-pending { color: #f0ad4e; }
+    .status-approved { color: #28a745; }
+    .status-rejected { color: #dc3545; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <aside class="col-lg-3">
+        {% include 'includes/my_sidebar.html' %}
+    </aside>
+
+    <section class="col-lg-9">
+        <!-- 余额展示 -->
+        <div class="card recharge-card mb-4">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h6 class="text-muted mb-2">当前余额</h6>
+                        <h2 class="text-primary mb-0">¥ {{ user.profile.balance }}</h2>
+                    </div>
+                    <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle"></i> 提交后将跳转到支付宝完成支付，支付成功后自动到账
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 充值表单 -->
+        <div class="card recharge-card mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-plus-circle text-primary"></i> 充值申请</h5>
+            </div>
+            <div class="card-body p-4">
+                <form id="recharge-form">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">选择金额或自定义输入</label>
+                        <div class="row g-2 mb-3">
+                            <div class="col-4 col-md-2"><div class="amount-preset border rounded p-2 text-center" data-amount="50"><strong>¥50</strong></div></div>
+                        <div class="col-4 col-md-2"><div class="amount-preset border rounded p-2 text-center" data-amount="100"><strong>¥100</strong></div></div>
+                        <div class="col-4 col-md-2"><div class="amount-preset border rounded p-2 text-center" data-amount="200"><strong>¥200</strong></div></div>
+                        <div class="col-4 col-md-2"><div class="amount-preset border rounded p-2 text-center" data-amount="500"><strong>¥500</strong></div></div>
+                        <div class="col-4 col-md-2"><div class="amount-preset border rounded p-2 text-center" data-amount="1000"><strong>¥1000</strong></div></div>
+                        <div class="col-4 col-md-2"><div class="amount-preset border rounded p-2 text-center" data-amount="2000"><strong>¥2000</strong></div></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="custom-amount" class="form-label fw-bold">自定义金额</label>
+                        <div class="input-group" style="max-width: 300px;">
+                            <span class="input-group-text">¥</span>
+                            <input type="number" id="custom-amount" class="form-control"
+                                   placeholder="输入充值金额" min="1" max="100000" step="0.01">
+                        </div>
+                        <small class="text-muted">单次充值金额范围：¥1 ~ ¥100,000</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary px-4" id="submit-btn">
+                        <i class="fab fa-alipay"></i> 前往支付宝支付
+                    </button>
+                </form>
+                <div id="result-msg" class="mt-3" style="display:none;"></div>
+            </div>
+        </div>
+
+        <!-- 充值记录 -->
+        <div class="card recharge-card">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-history text-secondary"></i> 充值记录</h5>
+                <button class="btn btn-outline-secondary btn-sm" id="refresh-btn">
+                    <i class="fas fa-sync-alt"></i> 刷新
+                </button>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>申请时间</th>
+                                <th>金额</th>
+                                <th>状态</th>
+                                <th>审核时间</th>
+                            </tr>
+                        </thead>
+                        <tbody id="request-list">
+                            {% if recharge_requests %}
+                                {% for r in recharge_requests %}
+                                <tr>
+                                    <td>{{ r.created_at|date:"Y-m-d H:i" }}</td>
+                                    <td><strong>¥{{ r.amount }}</strong></td>
+                                    <td>
+                                        <span class="status-{{ r.status }}">
+                                            {% if r.status == 'pending' %}
+                                                <i class="fas fa-clock"></i>
+                                            {% elif r.status == 'approved' %}
+                                                <i class="fas fa-check-circle"></i>
+                                            {% elif r.status == 'rejected' %}
+                                                <i class="fas fa-times-circle"></i>
+                                            {% endif %}
+                                            {{ r.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ r.reviewed_at|date:"Y-m-d H:i"|default:"-" }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">暂无充值记录</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(function() {
+    // 快捷金额选择
+    $('.amount-preset').click(function() {
+        $('.amount-preset').removeClass('active');
+        $(this).addClass('active');
+        $('#custom-amount').val($(this).data('amount'));
+    });
+
+    // 自定义金额输入时取消预设选择
+    $('#custom-amount').on('input', function() {
+        $('.amount-preset').removeClass('active');
+    });
+
+    // 充值表单提交
+    $('#recharge-form').submit(function(e) {
+        e.preventDefault();
+        var amount = $('#custom-amount').val();
+        if (!amount || parseFloat(amount) <= 0) {
+            showMsg('请输入有效的充值金额', 'danger');
+            return;
+        }
+        if (parseFloat(amount) > 100000) {
+            showMsg('单次充值金额不能超过 ¥100,000', 'danger');
+            return;
+        }
+
+        var $btn = $('#submit-btn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> 提交中...');
+
+        $.post('/trading/recharge', {
+            amount: amount,
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+        })
+        .done(function(res) {
+            if (res.ok && res.pay_url) {
+                showMsg('<i class="fas fa-spinner fa-spin"></i> 正在跳转到支付宝支付页面...', 'info');
+                window.location.href = res.pay_url;
+            } else {
+                showMsg('<i class="fas fa-exclamation-triangle"></i> ' + (res.error || '请求失败'), 'danger');
+            }
+        })
+        .fail(function() {
+            showMsg('网络错误，请稍后重试', 'danger');
+        })
+        .always(function() {
+            $btn.prop('disabled', false).html('<i class="fab fa-alipay"></i> 前往支付宝支付');
+        });
+    });
+
+    // 刷新充值记录
+    $('#refresh-btn').click(function() {
+        var $btn = $(this).prop('disabled', true);
+        loadRequests().always(function() { $btn.prop('disabled', false); });
+    });
+
+    function loadRequests() {
+        return $.get('/trading/recharge/requests')
+            .done(function(res) {
+                if (!res.ok) return;
+                var $tbody = $('#request-list');
+                if (res.requests.length === 0) {
+                    $tbody.html('<tr><td colspan="4" class="text-center text-muted py-4">暂无充值记录</td></tr>');
+                    return;
+                }
+                var rows = res.requests.map(function(r) {
+                    var icon = '', cls = '';
+                    if (r.status === 'pending') { icon = 'fa-clock'; cls = 'status-pending'; }
+                    else if (r.status === 'approved') { icon = 'fa-check-circle'; cls = 'status-approved'; }
+                    else if (r.status === 'rejected') { icon = 'fa-times-circle'; cls = 'status-rejected'; }
+                    var created = r.created_at ? r.created_at.replace('T', ' ').substring(0, 16) : '-';
+                    var reviewed = r.reviewed_at ? r.reviewed_at.replace('T', ' ').substring(0, 16) : '-';
+                    return '<tr>' +
+                        '<td>' + created + '</td>' +
+                        '<td><strong>¥' + r.amount + '</strong></td>' +
+                        '<td><span class="' + cls + '"><i class="fas ' + icon + '"></i> ' + r.status_display + '</span></td>' +
+                        '<td>' + reviewed + '</td>' +
+                        '</tr>';
+                });
+                $tbody.html(rows.join(''));
+            });
+    }
+
+    function showMsg(html, type) {
+        var $msg = $('#result-msg');
+        $msg.removeClass('alert-success alert-danger alert-warning')
+            .addClass('alert alert-' + type)
+            .html(html)
+            .show();
+    }
+});
+</script>
+{% endblock %}

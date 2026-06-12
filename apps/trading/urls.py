@@ -13,6 +13,9 @@ urlpatterns = [
     path('buyer/orders', views.buyer_orders),
     path('seller/orders', views.seller_orders),
     path('recharge', views.recharge, name='recharge'),
+    path('recharge/requests', views.recharge_requests, name='recharge_requests'),
     path('payment/initiate', views.initiate_payment),
     path('payment/callback', views.payment_callback),
+    path('alipay/return', views.alipay_return, name='alipay_return'),
+    path('alipay/notify', views.alipay_notify, name='alipay_notify'),
 ]

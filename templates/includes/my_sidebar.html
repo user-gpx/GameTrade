@@ -9,6 +9,9 @@
     <a href="{% url 'orders:seller_orders' %}" class="list-group-item list-group-item-action {% if active_my_menu == 'seller_orders' %}active{% endif %}">
         <i class="fas fa-store me-2"></i> 卖家订单
     </a>
+    <a href="{% url 'users:recharge' %}" class="list-group-item list-group-item-action {% if active_my_menu == 'recharge' %}active{% endif %}">
+        <i class="fas fa-coins me-2"></i> 充值中心
+    </a>
     <a href="{% url 'users:profile' %}" class="list-group-item list-group-item-action {% if active_my_menu == 'profile' %}active{% endif %}">
         <i class="fas fa-id-card me-2"></i> 个人资料
     </a>

@@ -23,6 +23,7 @@ class Order(models.Model):
         (STATUS_CANCELLED, '已取消'),
     ]
 
+    order_no = models.CharField(max_length=32, unique=True, blank=True, verbose_name='订单编号')
     item = models.ForeignKey(Item, on_delete=models.PROTECT, related_name='orders', verbose_name='道具')
     buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='buy_orders', verbose_name='买家')
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sell_orders', verbose_name='卖家')
@@ -40,8 +41,13 @@ class Order(models.Model):
         verbose_name_plural = '订单'
         ordering = ['-created_at']
 
+    def save(self, *args, **kwargs):
+        if not self.order_no:
+            self.order_no = uuid.uuid4().hex[:16]
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f'订单#{self.pk} - {self.item.name}'
+        return f'订单#{self.order_no} - {self.item.name}'
 
     def mark_paid(self):
         self.status = self.STATUS_PAID
