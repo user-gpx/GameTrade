@@ -3,92 +3,99 @@
 {% block title %}订单与统计中心{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h2 class="mb-1">订单与统计中心</h2>
-        <p class="text-muted mb-0">管理购买、出售订单，并生成交易月报。</p>
-    </div>
-    <form method="post" action="{% url 'stats:monthly_report' %}">
-        {% csrf_token %}
-        <input type="hidden" name="year" value="{{ current_year }}">
-        <input type="hidden" name="month" value="{{ current_month }}">
-        <button class="btn btn-primary">
-            <i class="fas fa-chart-line"></i> 生成本月月报
-        </button>
-    </form>
-</div>
+<div class="row g-4">
+    <aside class="col-lg-3">
+        {% include 'includes/my_sidebar.html' %}
+    </aside>
+    <section class="col-lg-9">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="mb-1">订单与统计中心</h2>
+                <p class="text-muted mb-0">管理购买、出售订单，并生成交易月报。</p>
+            </div>
+            <form method="post" action="{% url 'stats:monthly_report' %}">
+                {% csrf_token %}
+                <input type="hidden" name="year" value="{{ current_year }}">
+                <input type="hidden" name="month" value="{{ current_month }}">
+                <button class="btn btn-primary">
+                    <i class="fas fa-chart-line"></i> 生成本月月报
+                </button>
+            </form>
+        </div>
 
-<div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="text-muted">购买订单</div>
-                <div class="fs-3 fw-bold">{{ my_buy_count }}</div>
-                <a href="{% url 'orders:buyer_orders' %}" class="stretched-link">查看</a>
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="text-muted">购买订单</div>
+                        <div class="fs-3 fw-bold">{{ my_buy_count }}</div>
+                        <a href="{% url 'orders:buyer_orders' %}" class="stretched-link">查看</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="text-muted">出售订单</div>
+                        <div class="fs-3 fw-bold">{{ my_sell_count }}</div>
+                        <a href="{% url 'orders:seller_orders' %}" class="stretched-link">查看</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="text-muted">待发货</div>
+                        <div class="fs-3 fw-bold">{{ pending_ship_count }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="text-muted">待收货</div>
+                        <div class="fs-3 fw-bold">{{ pending_receive_count }}</div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="text-muted">出售订单</div>
-                <div class="fs-3 fw-bold">{{ my_sell_count }}</div>
-                <a href="{% url 'orders:seller_orders' %}" class="stretched-link">查看</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="text-muted">待发货</div>
-                <div class="fs-3 fw-bold">{{ pending_ship_count }}</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="text-muted">待收货</div>
-                <div class="fs-3 fw-bold">{{ pending_receive_count }}</div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <span>最近订单</span>
-        <a href="{% url 'stats:monthly_report' %}" class="btn btn-sm btn-outline-primary">月报列表</a>
-    </div>
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead>
-                <tr>
-                    <th>订单</th>
-                    <th>道具</th>
-                    <th>金额</th>
-                    <th>状态</th>
-                    <th>时间</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for order in latest_orders %}
-                <tr>
-                    <td>#{{ order.id }}</td>
-                    <td>{{ order.item.name }}</td>
-                    <td>¥{{ order.price }}</td>
-                    <td><span class="badge bg-secondary">{{ order.get_status_display }}</span></td>
-                    <td>{{ order.created_at|date:'Y-m-d H:i' }}</td>
-                    <td><a href="{% url 'orders:detail' order.id %}" class="btn btn-sm btn-outline-secondary">详情</a></td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="6" class="text-center text-muted py-4">暂无订单</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>最近订单</span>
+                <a href="{% url 'stats:monthly_report' %}" class="btn btn-sm btn-outline-primary">月报列表</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>订单</th>
+                            <th>道具</th>
+                            <th>金额</th>
+                            <th>状态</th>
+                            <th>时间</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in latest_orders %}
+                        <tr>
+                            <td>#{{ order.id }}</td>
+                            <td>{{ order.item.name }}</td>
+                            <td>¥{{ order.price }}</td>
+                            <td><span class="badge bg-secondary">{{ order.get_status_display }}</span></td>
+                            <td>{{ order.created_at|date:'Y-m-d H:i' }}</td>
+                            <td><a href="{% url 'orders:detail' order.id %}" class="btn btn-sm btn-outline-secondary">详情</a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">暂无订单</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
 </div>
 {% endblock %}

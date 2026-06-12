@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -18,6 +18,16 @@ from users.models import UserProfile
 from .models import RechargeRequest, TransactionLog
 
 User = get_user_model()
+
+
+ORDER_STATUS_ALIASES = {
+    'pending_payment': Order.STATUS_PENDING_PAYMENT,
+    'paid': Order.STATUS_PAID,
+    'shipped': Order.STATUS_SHIPPED,
+    'completed': Order.STATUS_COMPLETED,
+    'cancelled': Order.STATUS_CANCELLED,
+    'canceled': Order.STATUS_CANCELLED,
+}
 
 
 def _get_user_from_request(request):
@@ -84,6 +94,8 @@ def buy_now(request):
         price=item.price,
         status=Order.STATUS_PAID,
     )
+    order.paid_at = timezone.now()
+    order.save(update_fields=['paid_at'])
 
     Payment.objects.create(
         order=order,
@@ -95,7 +107,6 @@ def buy_now(request):
     return JsonResponse({
         'ok': True,
         'order_id': order.id,
-        'order_no': order.order_no,
         'status': order.status,
         'balance': str(buyer_profile.balance),
     })
@@ -135,7 +146,7 @@ def create_order(request):
         status=Order.STATUS_PENDING_PAYMENT,
     )
 
-    return JsonResponse({'ok': True, 'order_id': order.id, 'order_no': order.order_no, 'status': order.status})
+    return JsonResponse({'ok': True, 'order_id': order.id, 'status': order.status})
 
 
 @csrf_exempt
@@ -222,8 +233,7 @@ def payment_callback(request):
 
     if result == 'success':
         payment.mark_success()
-        order.status = Order.STATUS_PAID
-        order.save(update_fields=['status'])
+        order.mark_paid()
 
         item = Item.objects.select_for_update().get(id=order.item_id)
         item.status = Item.Status.SOLD
@@ -256,8 +266,8 @@ def ship_order(request):
     if order.status != Order.STATUS_PAID:
         return _json_error('order not shippable')
 
-    order.status = Order.STATUS_SHIPPED
-    order.save(update_fields=['status'])
+    shipping_info = request.POST.get('shipping_info', '交易接口发货')
+    order.mark_shipped(shipping_info)
     return JsonResponse({'ok': True, 'order_id': order.id, 'status': order.status})
 
 
@@ -293,8 +303,7 @@ def confirm_receipt(request):
         balance_after=seller_profile.balance,
     )
 
-    order.status = Order.STATUS_COMPLETED
-    order.save(update_fields=['status'])
+    order.mark_completed()
 
     return JsonResponse({'ok': True, 'order_id': order.id, 'status': order.status, 'seller_balance': str(seller_profile.balance)})
 
@@ -305,7 +314,7 @@ def buyer_orders(request):
     if not user:
         return _json_error('invalid user', status=401)
 
-    status = request.GET.get('status')
+    status = ORDER_STATUS_ALIASES.get(request.GET.get('status'), request.GET.get('status'))
     qs = Order.objects.filter(buyer_id=user.id).select_related('item').order_by('-created_at')
     if status:
         qs = qs.filter(status=status)
@@ -315,7 +324,6 @@ def buyer_orders(request):
         data.append(
             {
                 'id': o.id,
-                'order_no': o.order_no,
                 'buyer_id': o.buyer_id,
                 'seller_id': o.seller_id,
                 'item_id': o.item_id,
@@ -334,7 +342,7 @@ def seller_orders(request):
     if not user:
         return _json_error('invalid user', status=401)
 
-    status = request.GET.get('status')
+    status = ORDER_STATUS_ALIASES.get(request.GET.get('status'), request.GET.get('status'))
     qs = Order.objects.filter(seller_id=user.id).select_related('item').order_by('-created_at')
     if status:
         qs = qs.filter(status=status)
@@ -344,7 +352,6 @@ def seller_orders(request):
         data.append(
             {
                 'id': o.id,
-                'order_no': o.order_no,
                 'buyer_id': o.buyer_id,
                 'seller_id': o.seller_id,
                 'item_id': o.item_id,

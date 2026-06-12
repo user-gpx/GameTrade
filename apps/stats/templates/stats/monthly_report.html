@@ -3,41 +3,48 @@
 {% block title %}交易月报{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">交易月报</h2>
-    <a href="{% url 'stats:dashboard' %}" class="btn btn-outline-secondary">返回中心</a>
-</div>
+<div class="row g-4">
+    <aside class="col-lg-3">
+        {% include 'includes/my_sidebar.html' %}
+    </aside>
+    <section class="col-lg-9">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">交易月报</h2>
+            <a href="{% url 'stats:dashboard' %}" class="btn btn-outline-secondary">返回中心</a>
+        </div>
 
-<div class="card mb-4">
-    <div class="card-body">
-        <form method="post" class="row g-3 align-items-end">
-            {% csrf_token %}
-            <div class="col-md-3">
-                <label class="form-label">年份</label>
-                <input type="number" name="year" class="form-control" value="{{ year }}" min="2020" max="2100">
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="post" class="row g-3 align-items-end">
+                    {% csrf_token %}
+                    <div class="col-md-3">
+                        <label class="form-label">年份</label>
+                        <input type="number" name="year" class="form-control" value="{{ year }}" min="2020" max="2100">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">月份</label>
+                        <input type="number" name="month" class="form-control" value="{{ month }}" min="1" max="12">
+                    </div>
+                    <div class="col-md-auto">
+                        <button class="btn btn-primary">生成月报</button>
+                    </div>
+                </form>
             </div>
-            <div class="col-md-3">
-                <label class="form-label">月份</label>
-                <input type="number" name="month" class="form-control" value="{{ month }}" min="1" max="12">
-            </div>
-            <div class="col-md-auto">
-                <button class="btn btn-primary">生成月报</button>
-            </div>
-        </form>
-    </div>
-</div>
+        </div>
 
-<div class="card">
-    <div class="card-header">历史月报</div>
-    <div class="list-group list-group-flush">
-        {% for report in reports %}
-        <a href="{% url 'stats:monthly_report_detail' report.id %}" class="list-group-item list-group-item-action d-flex justify-content-between">
-            <span>{{ report.year }}年{{ report.month }}月交易月报</span>
-            <span class="text-muted">{{ report.created_at|date:'Y-m-d H:i' }}</span>
-        </a>
-        {% empty %}
-        <div class="list-group-item text-center text-muted py-4">暂无月报</div>
-        {% endfor %}
-    </div>
+        <div class="card">
+            <div class="card-header">历史月报</div>
+            <div class="list-group list-group-flush">
+                {% for report in reports %}
+                <a href="{% url 'stats:monthly_report_detail' report.id %}" class="list-group-item list-group-item-action d-flex justify-content-between">
+                    <span>{{ report.year }}年{{ report.month }}月交易月报</span>
+                    <span class="text-muted">{{ report.created_at|date:'Y-m-d H:i' }}</span>
+                </a>
+                {% empty %}
+                <div class="list-group-item text-center text-muted py-4">暂无月报</div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
 </div>
 {% endblock %}
